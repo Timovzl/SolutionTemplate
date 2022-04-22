@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<AssemblyName>__ToDoAreaName__.__ToDoBoundedContextName__.Domain</AssemblyName>
+		<RootNamespace>__ToDoAreaName__.__ToDoBoundedContextName__.Domain</RootNamespace>
+		<Nullable>Enable</Nullable>
+		<ImplicitUsings>Enable</ImplicitUsings>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<InternalsVisibleTo Include="$(AssemblyName).UnitTests" />
+		<InternalsVisibleTo Include="__ToDoAreaName__.__ToDoBoundedContextName__.Testing.Common" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Architect.AmbientContexts" Version="1.1.1" />
+		<PackageReference Include="Architect.Identities" Version="1.0.2" />
+		<PackageReference Include="Architect.DomainModeling" Version="1.0.1" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="Scrutor" Version="4.1.0" />
+	</ItemGroup>
+
+</Project>

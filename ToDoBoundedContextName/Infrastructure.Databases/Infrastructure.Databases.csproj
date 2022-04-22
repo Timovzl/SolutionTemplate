@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<AssemblyName>__ToDoAreaName__.__ToDoBoundedContextName__.Infrastructure.Databases</AssemblyName>
+		<RootNamespace>__ToDoAreaName__.__ToDoBoundedContextName__.Infrastructure.Databases</RootNamespace>
+		<Nullable>Enable</Nullable>
+		<ImplicitUsings>Enable</ImplicitUsings>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<InternalsVisibleTo Include="$(AssemblyName).UnitTests" />
+		<InternalsVisibleTo Include="$(AssemblyName).IntegrationTests" />
+		<InternalsVisibleTo Include="__ToDoAreaName__.__ToDoBoundedContextName__.Application.IntegrationTests" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="6.0.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Domain\Domain.csproj" />
+	</ItemGroup>
+
+</Project>
