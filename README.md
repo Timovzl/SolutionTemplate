@@ -2,10 +2,6 @@
 
 _A template used to create a new DDD-enabled solution from scratch._
 
-## Table of Contents
-
-[[_TOC_]]
-
 ## Instructions
 
 - Pull this repository, to ensure that you have the latest version.
