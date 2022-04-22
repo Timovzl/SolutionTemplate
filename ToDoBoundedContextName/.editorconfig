@@ -263,3 +263,9 @@ dotnet_naming_style._camelcase.capitalization = camel_case
 [*.json]
 indent_size = 2
 indent_style = space
+
+# C# project files
+[*.csproj]
+indent_size = 4
+indent_style = tab
+tab_width = 4
