@@ -36,6 +36,7 @@ public class RequestExceptionHandler
 		{
 			this.Logger.LogInformation(exception, "The caller cancelled the request.");
 		}
+		// TODO Enhancement: Log validation exceptions as Warning or Informational
 		else if (exception is not null)
 		{
 			this.Logger.LogError(exception, "The request handler has thrown an exception.");
