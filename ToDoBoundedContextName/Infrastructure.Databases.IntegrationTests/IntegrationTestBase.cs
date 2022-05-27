@@ -58,7 +58,7 @@ public abstract class IntegrationTestBase : IDisposable
 		this.ConnectionString = $"{this.Configuration["ConnectionStrings:ContextDatabase"]};Database={this.UniqueTestName};DefaultCommandTimeout=120;";
 		this.Configuration["ConnectionStrings:ContextDatabase"] = this.ConnectionString;
 
-		this.HostBuilder.ConfigureServices(c => c.AddSingleton(this.Configuration));
+		this.ConfigureServices(services => services.AddSingleton(this.Configuration));
 
 		this.ConfigureServices(services => services.AddDatabaseInfrastructureLayer(this.Configuration));
 	}

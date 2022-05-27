@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<!-- 3.1+ target provides nullable annotations -->
-		<TargetFrameworks>netcoreapp3.1;netstandard2.0</TargetFrameworks>
+		<!-- Any 3.1+ target provides nullable annotations -->
+		<TargetFrameworks>net6.0;netstandard2.0</TargetFrameworks>
 		<AssemblyName>__ToDoAreaName__.__ToDoBoundedContextName__.Contracts</AssemblyName>
 		<RootNamespace>__ToDoAreaName__.__ToDoBoundedContextName__.Contracts</RootNamespace>
 		<Nullable>Enable</Nullable>

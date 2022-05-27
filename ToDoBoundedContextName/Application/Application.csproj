@@ -14,13 +14,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="prometheus-net.AspNetCore" Version="6.0.0" />
+		<PackageReference Include="Architect.EventualConsistency" Version="1.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Contracts\Contracts.csproj" />
 		<ProjectReference Include="..\Domain\Domain.csproj" />
-		<ProjectReference Include="..\Infrastructure.Databases\Infrastructure.Databases.csproj" />
 	</ItemGroup>
 
 </Project>

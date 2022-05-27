@@ -1,6 +1,5 @@
 using System.Globalization;
 using __ToDoAreaName__.__ToDoBoundedContextName__.Domain;
-using __ToDoAreaName__.__ToDoBoundedContextName__.Infrastructure.Databases;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,7 +14,6 @@ public static class ApplicationRegistrationExtensions
 
 		// Register the layers that we depend on
 		services.AddDomainLayer(configuration);
-		services.AddDatabaseInfrastructureLayer(configuration);
 
 		// Register the current project's dependencies
 		services.Scan(scanner => scanner.FromAssemblies(typeof(ApplicationRegistrationExtensions).Assembly)
