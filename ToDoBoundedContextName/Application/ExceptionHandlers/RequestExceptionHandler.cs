@@ -1,3 +1,5 @@
+using System.Net;
+using System.Text;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
@@ -42,7 +44,9 @@ public class RequestExceptionHandler
 			OperationCanceledException { CancellationToken: var cancellationToken } when cancellationToken == this.HttpContextAccessor.HttpContext?.RequestAborted =>
 				this.Logger.LogInformation(exception, "The caller cancelled the request."),
 
-			// TODO Enhancement: Log validation exceptions as Warning or Informational, and return BadRequest
+			ValidationException validationException =>
+				this.HandleValidationException(validationException),
+
 			Exception =>
 				this.Logger.LogError(exception, "The request handler has thrown an exception."),
 
@@ -51,5 +55,25 @@ public class RequestExceptionHandler
 		};
 
 		return Task.CompletedTask;
+	}
+
+	private void HandleValidationException(ValidationException exception)
+	{
+		this.Logger.LogInformation(exception, "The request was invalid: {Message}", exception.Message);
+
+		// Respond with the rejection if possible
+		var httpContext = this.HttpContextAccessor.HttpContext;
+		if (httpContext?.Response.HasStarted == false)
+		{
+			Span<byte> messageBytes = exception.Message.Length > 1024
+				? new byte[Encoding.UTF8.GetByteCount(exception.Message)]
+				: stackalloc byte[4 * exception.Message.Length];
+
+			var messageByteCount = Encoding.UTF8.GetBytes(exception.Message, messageBytes);
+			messageBytes = messageBytes[0..messageByteCount];
+
+			httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+			httpContext.Response.Body.Write(messageBytes);
+		}
 	}
 }
