@@ -23,7 +23,7 @@ public class RequestExceptionHandler
 		this.Logger = logger;
 	}
 
-	public Task HandleExceptionAsync()
+	public async Task HandleExceptionAsync()
 	{
 		var exceptionHandlerFeature = this.HttpContextAccessor.HttpContext?.Features.Get<IExceptionHandlerFeature>();
 		var exception = exceptionHandlerFeature?.Error;
@@ -45,7 +45,7 @@ public class RequestExceptionHandler
 				this.Logger.LogInformation(exception, "The caller cancelled the request."),
 
 			ValidationException validationException =>
-				this.HandleValidationException(validationException),
+				await this.HandleValidationExceptionAsync(validationException),
 
 			Exception =>
 				this.Logger.LogError(exception, "The request handler has thrown an exception."),
@@ -53,11 +53,9 @@ public class RequestExceptionHandler
 			_ =>
 				this.Logger.LogError("The request exception handler was invoked, but no exception was available."),
 		};
-
-		return Task.CompletedTask;
 	}
 
-	private void HandleValidationException(ValidationException exception)
+	private async Task HandleValidationExceptionAsync(ValidationException exception)
 	{
 		this.Logger.LogInformation(exception, "The request was invalid: {Message}", exception.Message);
 
@@ -65,15 +63,8 @@ public class RequestExceptionHandler
 		var httpContext = this.HttpContextAccessor.HttpContext;
 		if (httpContext?.Response.HasStarted == false)
 		{
-			Span<byte> messageBytes = exception.Message.Length > 1024
-				? new byte[Encoding.UTF8.GetByteCount(exception.Message)]
-				: stackalloc byte[4 * exception.Message.Length];
-
-			var messageByteCount = Encoding.UTF8.GetBytes(exception.Message, messageBytes);
-			messageBytes = messageBytes[0..messageByteCount];
-
 			httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-			httpContext.Response.Body.Write(messageBytes);
+			await httpContext.Response.Body.WriteAsync(Encoding.UTF8.GetBytes(exception.Message));
 		}
 	}
 }
