@@ -26,25 +26,29 @@ public class RequestExceptionHandler
 		var exceptionHandlerFeature = this.HttpContextAccessor.HttpContext?.Features.Get<IExceptionHandlerFeature>();
 		var exception = exceptionHandlerFeature?.Error;
 
-		// Shutdown is an acceptable reason for cancellation
-		if (exception is OperationCanceledException && this.HostApplicationLifetime.ApplicationStopping.IsCancellationRequested)
+		// Note:
+		// Cancellation checks are imperfect
+		// Checking OperationCanceledException.CancellationToken: If multiple tokens are combined into a new token, we would not match, and wrongfully infer a "hard" failure
+		// Checking CancellationToken.IsCancellationRequested: If a slow query or HTTP request times out, and the comparison token (RequestAborted, ApplicationStopping) was cancelled in the meantime, we would match, and wrongfully infer a "soft" failure
+		// We choose the former as the lesser evil
+
+		exception switch
 		{
-			this.Logger.LogInformation(exception, "Shutdown cancelled the request.");
-		}
-		// An aborted request is an acceptable reason for cancellation
-		else if (exception is OperationCanceledException && this.HttpContextAccessor.HttpContext?.RequestAborted.IsCancellationRequested == true)
-		{
-			this.Logger.LogInformation(exception, "The caller cancelled the request.");
-		}
-		// TODO Enhancement: Log validation exceptions as Warning or Informational
-		else if (exception is not null)
-		{
-			this.Logger.LogError(exception, "The request handler has thrown an exception.");
-		}
-		else
-		{
-			this.Logger.LogError("The request exception handler was invoked, but no exception was available.");
-		}
+			// Shutdown is an acceptable reason for cancellation
+			OperationCanceledException { CancellationToken: var cancellationToken } when cancellationToken == this.HostApplicationLifetime.ApplicationStopping =>
+				this.Logger.LogInformation(exception, "Shutdown cancelled the request."),
+
+			// An aborted request is an acceptable reason for cancellation
+			OperationCanceledException { CancellationToken: var cancellationToken } when cancellationToken == this.HttpContextAccessor.HttpContext?.RequestAborted =>
+				this.Logger.LogInformation(exception, "The caller cancelled the request."),
+
+			// TODO Enhancement: Log validation exceptions as Warning or Informational, and return BadRequest
+			Exception =>
+				this.Logger.LogError(exception, "The request handler has thrown an exception."),
+
+			_ =>
+				this.Logger.LogError("The request exception handler was invoked, but no exception was available."),
+		};
 
 		return Task.CompletedTask;
 	}
