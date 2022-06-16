@@ -1,7 +1,7 @@
-﻿# __ToDoBoundedContextName__
+# __ToDoBoundedContextName__
 
 __ToDoExplanation__
 
 ## Local Development
 
-__ToDoDescribeLocalInfraDependenciesSuchAsContainers__
+TODO: Describe how to set up any local infrastructure dependencies, such as Docker containers, LocalDB, etc.

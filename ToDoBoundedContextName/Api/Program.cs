@@ -21,8 +21,6 @@ internal static class Program
 		if (builder.Environment.IsDevelopment())
 			app.UseDeveloperExceptionPage();
 
-		// TODO: Consider if !builder.Environment.IsDevelopment() app.UseHsts(), and other possible security settings
-
 		app.UseExceptionHandler(app => app.Run(async context =>
 			await context.RequestServices.GetRequiredService<RequestExceptionHandler>().HandleExceptionAsync()));
 

@@ -6,7 +6,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://localhost:__ToDoChooseFirstRandom5DigitPort__;https://localhost:__ToDoChooseSecondRandom5DigitPort__"
+      "applicationUrl": "http://localhost:65431"
     }
   }
 }

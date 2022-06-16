@@ -1,19 +1,21 @@
 # Solution Template
 
-_A template used to create a new DDD-enabled solution from scratch._
+A solution template for Domain-Driven Design (DDD) on Clean Architecture.
 
 ## Instructions
 
-- Pull this repository, to ensure that you have the latest version.
-- Make a copy of the ToDoBoundedContextName directory.
-- Rename the copied directory and the sln file.
-- In Notepad++, perform the following "replace in files" operations (Ctrl+Shift+F), within the solution dir, on `*.*`:
-	- `__ToDoBoundedContextName__` (e.g. `OrderProcessing`)
-	- `__ToDoAreaName__` (e.g. `MyCompany.MyDepartment`)
-- In each runnable app's launchSettings.json, complete the TODOs regarding the HTTP ports (for example, by typing `Get-Random 6552` in PowerShell and appending 0-9 for the respective replacements.)
-- Complete the TODOs in the Api's Startup.cs.
-- Complete the TODOs in the readme file.
-- From Notepad++, "find in files" the text `__ToDo`, and handle any TODOs that were missed. (You can ignore any .pdb files, which may not have been updated yet.)
+To create a new solution using the template, first clone or pull this repository, ensuring that you have the latest version. Then perform the following commands using PowerShell or another terminal _in the repository's `ToDoBoundedContextName` directory_:
+
+```PowerShell
+# Ensure that the template can be freshly installed by removing any prior version
+dotnet new -u .
+
+# Install the template
+dotnet new -i .
+
+# Create a new solution using the template
+dotnet new CleanDdd -o ToDoTargetPathIncludingSolutionDir -n ToDoSolutionName -ar ToDoCompanyName.ToDoDepartmentName -e "TODO: A short summary of the Bounded Context, for the readme."
+```
 
 ### Adding an Application
 

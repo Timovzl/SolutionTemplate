@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Timovzl",
+  "classifications": [
+    "Solution",
+    "DDD",
+    "Web",
+    "Azure Function"
+  ],
+  "name": "Clean DDD Solution",
+  "description": "A solution template for Domain-Driven Design (DDD) on Clean Architecture.",
+  "identity": "Timovzl.Templates.CleanDdd",
+  "groupIdentity": "Timovzl.Templates",
+  "shortName": "CleanDdd",
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  },
+  "sourceName": "__ToDoBoundedContextName__",
+  "preferNameDirectory": true,
+  "symbols": {
+    "httpPort":{
+      "type": "generated",
+      "generator": "random",
+      "parameters": {
+        "low": 1000,
+        "high": 6552
+      },
+      "replaces": "6543"
+    },
+    "areaName": {
+      "description": "e.g. MyCompany.MyDepartment",
+      "type": "parameter",
+      "isRequired": true,
+      "replaces": "__ToDoAreaName__"
+    },
+    "explanation": {
+      "description": "A short summary of the Bounded Context, for the readme.",
+      "type": "parameter",
+      "isRequired": true,
+      "replaces": "__ToDoExplanation__"
+    }
+  }
+}

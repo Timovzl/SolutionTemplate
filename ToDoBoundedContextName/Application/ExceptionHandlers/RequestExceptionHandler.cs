@@ -34,25 +34,16 @@ public class RequestExceptionHandler
 		// Checking CancellationToken.IsCancellationRequested: If a slow query or HTTP request times out, and the comparison token (RequestAborted, ApplicationStopping) was cancelled in the meantime, we would match, and wrongfully infer a "soft" failure
 		// We choose the former as the lesser evil
 
-		exception switch
-		{
-			// Shutdown is an acceptable reason for cancellation
-			OperationCanceledException { CancellationToken: var cancellationToken } when cancellationToken == this.HostApplicationLifetime.ApplicationStopping =>
-				this.Logger.LogInformation(exception, "Shutdown cancelled the request."),
-
-			// An aborted request is an acceptable reason for cancellation
-			OperationCanceledException { CancellationToken: var cancellationToken } when cancellationToken == this.HttpContextAccessor.HttpContext?.RequestAborted =>
-				this.Logger.LogInformation(exception, "The caller cancelled the request."),
-
-			ValidationException validationException =>
-				await this.HandleValidationExceptionAsync(validationException),
-
-			Exception =>
-				this.Logger.LogError(exception, "The request handler has thrown an exception."),
-
-			_ =>
-				this.Logger.LogError("The request exception handler was invoked, but no exception was available."),
-		};
+		// Shutdown is an acceptable reason for cancellation
+		if ((exception as OperationCanceledException)?.CancellationToken == this.HostApplicationLifetime.ApplicationStopping)
+			this.Logger.LogInformation(exception, "Shutdown cancelled the request.");
+		// An aborted request is an acceptable reason for cancellation
+		else if ((exception is OperationCanceledException opCanceledException) && opCanceledException.CancellationToken == this.HttpContextAccessor.HttpContext?.RequestAborted)
+			this.Logger.LogInformation(exception, "The caller cancelled the request.");
+		else if (exception is ValidationException validationException)
+			await this.HandleValidationExceptionAsync(validationException);
+		else if (exception is not null)
+			this.Logger.LogError(exception, "The request handler has thrown an exception.");
 	}
 
 	private async Task HandleValidationExceptionAsync(ValidationException exception)

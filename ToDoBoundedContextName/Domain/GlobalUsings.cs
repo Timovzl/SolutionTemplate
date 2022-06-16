@@ -1,0 +1,1 @@
+global using __ToDoAreaName__.__ToDoBoundedContextName__.Domain.Validation;
