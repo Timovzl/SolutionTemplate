@@ -23,9 +23,8 @@ Keep in mind that, by design, the Bounded Context uses its Application layer to 
 
 To add another physical application project (e.g. ExternalApi, BackgroundApp, Portal), do the following:
 
-- In a temporary directory, create a copy of the solution template's Api project.
-- In the temporary copy, rename the Api project directory and csproj file to use the new application's name.
-- In the temporary copy, use Notepad++ to find all files containing the word "Api" (whole word, case-sensitive). _Manually_ replace the occurrences that make sense.
-- Perform the [instructions](#instructions) above on the temporary directory.
-- From the temporary copy, move the project directory into the solution directory.
-- In Visual Studio, add the project to the solution.
+- Duplicate the Api project directory, renaming both the directy and the csproj file.
+- In the new directory, delete bin, obj, and *.user.
+- In the new directory, use Notepad++ to find all files containing the word "Api" (whole word, case-sensitive). _Manually_ replace the occurrences that make sense.
+- In the new directory, in launchSettings.json, increment the last digit of each port number until it is unique.
+- In Visual Studio, add the new project to the solution.
