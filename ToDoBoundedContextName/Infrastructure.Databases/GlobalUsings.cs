@@ -1,0 +1,3 @@
+global using Architect.EntityFramework.DbContextManagement;
+global using Microsoft.EntityFrameworkCore;
+global using __ToDoAreaName__.__ToDoBoundedContextName__.Infrastructure.Databases.Shared;

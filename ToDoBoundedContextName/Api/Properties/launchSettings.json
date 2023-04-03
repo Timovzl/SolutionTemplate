@@ -1,12 +1,12 @@
 {
-  "profiles": {
-    "Api": {
-      "commandName": "Project",
-      "dotnetRunMessages": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "applicationUrl": "http://localhost:65431"
-    }
-  }
+	"profiles": {
+		"Api": {
+			"commandName": "Project",
+			"dotnetRunMessages": true,
+			"environmentVariables": {
+				"ASPNETCORE_ENVIRONMENT": "Development"
+			},
+			"applicationUrl": "http://localhost:65431"
+		}
+	}
 }

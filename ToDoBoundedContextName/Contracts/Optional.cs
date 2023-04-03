@@ -15,7 +15,7 @@ namespace __ToDoAreaName__.__ToDoBoundedContextName__.Contracts;
 /// </summary>
 public readonly struct Optional<T>
 {
-	public override string ToString() => this.HasValue ? this._value?.ToString() : "[Omitted Optional]";
+	public override string ToString() => this.HasValue ? this.ValueOrDefault?.ToString() : "[Omitted Optional]";
 
 	/// <summary>
 	/// If true, this object contains a value (which might be null).
@@ -71,7 +71,7 @@ public readonly struct Optional<T>
 	/// </summary>
 	public T GetValueOrProvided(T provided)
 	{
-		var result = this.HasValue ? this._value : provided;
+		var result = this.HasValue ? this.ValueOrDefault : provided;
 		return result;
 	}
 

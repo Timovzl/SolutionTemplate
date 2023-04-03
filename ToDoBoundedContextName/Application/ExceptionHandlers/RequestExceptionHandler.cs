@@ -3,7 +3,6 @@ using System.Text;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace __ToDoAreaName__.__ToDoBoundedContextName__.Application.ExceptionHandlers;
 
@@ -55,6 +54,7 @@ public class RequestExceptionHandler
 		if (httpContext?.Response.HasStarted == false)
 		{
 			httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+			httpContext.Response.ContentType = "text/plain";
 			await httpContext.Response.Body.WriteAsync(Encoding.UTF8.GetBytes(exception.Message));
 		}
 	}

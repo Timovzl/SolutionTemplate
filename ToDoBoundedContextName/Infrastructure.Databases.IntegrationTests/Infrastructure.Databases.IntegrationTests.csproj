@@ -1,35 +1,31 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
 		<AssemblyName>__ToDoAreaName__.__ToDoBoundedContextName__.Infrastructure.Databases.IntegrationTests</AssemblyName>
 		<RootNamespace>__ToDoAreaName__.__ToDoBoundedContextName__.Infrastructure.Databases.IntegrationTests</RootNamespace>
-		<Nullable>Enable</Nullable>
-		<ImplicitUsings>Enable</ImplicitUsings>
 		<IsPackable>False</IsPackable>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<!-- SYSLIB1045: Use 'GeneratedRegexAttribute' - not necessary for tests -->
+		<NoWarn>SYSLIB1045</NoWarn>
+	</PropertyGroup>
+
 	<ItemGroup>
-		<Content Include="appsettings.json">
+		<Content Include="appsettings*.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-			<ExcludeFromSingleFile>True</ExcludeFromSingleFile>
-			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-		</Content>
-		<Content Include="appsettings.Development.json">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-			<ExcludeFromSingleFile>True</ExcludeFromSingleFile>
 			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 		</Content>
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
-		<PackageReference Include="xunit" Version="2.4.1" />
-		<PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+		<PackageReference Include="Microsoft.NET.Test.Sdk" />
+		<PackageReference Include="xunit" />
+		<PackageReference Include="xunit.runner.visualstudio">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
-		<PackageReference Include="coverlet.collector" Version="3.1.2">
+		<PackageReference Include="coverlet.collector">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>

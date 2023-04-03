@@ -6,12 +6,18 @@ root = true
 
 #### Core EditorConfig Options ####
 
-# New line preferences
+charset = utf-8
 insert_final_newline = true
 end_of_line = crlf
+trim_trailing_whitespace = true
 
-# Default charset
-charset = utf-8
+indent_size = 4
+indent_style = tab
+tab_width = 4
+
+# Razor files
+[**.cshtml]
+charset = utf-8-bom
 
 # C# files
 [*.cs]
@@ -20,7 +26,7 @@ charset = utf-8
 dotnet_diagnostic.CA1822.severity = none # CA1822: Instance member does not access instance data and can be marked as static
 dotnet_diagnostic.CS1573.severity = none # CS1573: Undocumented public symbol while -doc compiler option is used
 dotnet_diagnostic.CS1591.severity = none # CS1591: Missing XML comment for publicly visible type
-dotnet_diagnostic.CA1816.severity = none # CA1816: Dispose() should call GC.SuppressFinalize()
+dotnet_diagnostic.CA1816.severity = default # CA1816: Dispose() should call GC.SuppressFinalize()
 
 # Indentation and spacing
 indent_size = 4
@@ -260,14 +266,3 @@ dotnet_naming_style._camelcase.required_prefix = _
 dotnet_naming_style._camelcase.required_suffix = 
 dotnet_naming_style._camelcase.word_separator = 
 dotnet_naming_style._camelcase.capitalization = camel_case
-
-# Json files
-[*.json]
-indent_size = 2
-indent_style = space
-
-# C# project files
-[*.csproj]
-indent_size = 4
-indent_style = tab
-tab_width = 4

@@ -1,5 +1,10 @@
+using System.Data;
+using System.Text.RegularExpressions;
+using Architect.EntityFramework.DbContextManagement;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace __ToDoAreaName__.__ToDoBoundedContextName__.Infrastructure.Databases.IntegrationTests;
@@ -12,11 +17,22 @@ public abstract class IntegrationTestBase : IDisposable
 	protected static string TimeZoneUtcOffsetString { get; } = $"+{TimeZoneInfo.Local.GetUtcOffset(DateTime.UnixEpoch):hh\\:mm}";
 
 	protected string UniqueTestName { get; } = $"Test_{Guid.NewGuid():N}";
+	/// <summary>
+	/// A fixed timestamp on January 1 in the future, with a nonzero value for hours, minutes, seconds, milliseconds, and ticks.
+	/// The nonzero time components help test edge cases, such as rounding or truncation by the database.
+	/// </summary>
+	protected static readonly DateTime UtcNow = new DateTime(3000, 01, 01, 01, 01, 01, millisecond: 01, DateTimeKind.Utc).AddTicks(1);
+	/// <summary>
+	/// A fixed timestamp on January 1 in the future.
+	/// </summary>
+	protected static readonly DateTime UtcToday = UtcNow.Date;
 
-	protected IHostBuilder HostBuilder { get; set; } = new HostBuilder();
+	protected IHostBuilder HostBuilder { get; set; }
 
 	protected IConfiguration Configuration { get; }
 	protected string ConnectionString { get; }
+
+	protected bool ShouldCreateDatabase { get; set; } = true;
 
 	/// <summary>
 	/// <para>
@@ -35,9 +51,10 @@ public abstract class IntegrationTestBase : IDisposable
 		{
 			if (this._host is null)
 			{
-				// Be as strict as ASP.NET Core in Development is
-				this.HostBuilder.UseDefaultServiceProvider(provider => provider.ValidateOnBuild = provider.ValidateScopes = true);
 				this._host ??= this.HostBuilder.Build();
+
+				if (this.ShouldCreateDatabase)
+					this.CreateDatabase();
 
 				// Start the host
 				this._host.Start();
@@ -49,14 +66,17 @@ public abstract class IntegrationTestBase : IDisposable
 
 	protected IntegrationTestBase()
 	{
-		this.Configuration = new ConfigurationBuilder()
-		   .AddJsonFile("appsettings.json")
-		   .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT")}.json", optional: true)
-		   .AddEnvironmentVariables()
-		   .Build();
+		this.HostBuilder = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder()
+			.UseDefaultServiceProvider(provider => provider.ValidateOnBuild = provider.ValidateScopes = true); // Be as strict as ASP.NET Core in Development is
 
-		this.ConnectionString = $"{this.Configuration["ConnectionStrings:ContextDatabase"]};Database={this.UniqueTestName};DefaultCommandTimeout=120;";
-		this.Configuration["ConnectionStrings:ContextDatabase"] = this.ConnectionString;
+		this.Configuration = new ConfigurationBuilder()
+			.AddJsonFile("appsettings.json")
+			.AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT")}.json", optional: true)
+			.AddEnvironmentVariables()
+			.Build();
+
+		this.ConnectionString = $@"{this.Configuration["ConnectionStrings:CoreDatabase"]};Initial Catalog={this.UniqueTestName};";
+		this.Configuration["ConnectionStrings:CoreDatabase"] = this.ConnectionString;
 
 		this.ConfigureServices(services => services.AddSingleton(this.Configuration));
 
@@ -65,6 +85,8 @@ public abstract class IntegrationTestBase : IDisposable
 
 	public virtual void Dispose()
 	{
+		GC.SuppressFinalize(this);
+
 		try
 		{
 			this._host?.StopAsync().GetAwaiter().GetResult();
@@ -72,6 +94,9 @@ public abstract class IntegrationTestBase : IDisposable
 		finally
 		{
 			this._host?.Dispose();
+
+			if (this._host is not null)
+				this.DeleteDatabase();
 		}
 	}
 
@@ -85,23 +110,99 @@ public abstract class IntegrationTestBase : IDisposable
 		this.HostBuilder.ConfigureServices(action ?? throw new ArgumentNullException(nameof(action)));
 	}
 
+	private protected DbContextScope<CoreDbContext> CreateDbContextScope()
+	{
+		return (DbContextScope<CoreDbContext>)this.Host.Services.GetRequiredService<IDbContextProvider<CoreDbContext>>().CreateDbContextScope();
+	}
+
+	protected async Task<int> ExecuteNonQuery(string query)
+	{
+		var dbContextAccessor = this.Host.Services.GetRequiredService<IDbContextAccessor<CoreDbContext>>();
+
+		await using var temporaryDbContext = dbContextAccessor.HasDbContext
+			? null
+			: await this.Host.Services.GetRequiredService<IDbContextFactory<CoreDbContext>>().CreateDbContextAsync();
+
+		var dbContext = dbContextAccessor.HasDbContext
+			? dbContextAccessor.CurrentDbContext
+			: temporaryDbContext!;
+
+		return await dbContext.Database.ExecuteSqlRawAsync(query);
+	}
+
+	protected async Task<object?> ExecuteScalar(string query)
+	{
+		var dbContextAccessor = this.Host.Services.GetRequiredService<IDbContextAccessor<CoreDbContext>>();
+
+		await using var temporaryDbContext = dbContextAccessor.HasDbContext
+			? null
+			: await this.Host.Services.GetRequiredService<IDbContextFactory<CoreDbContext>>().CreateDbContextAsync();
+
+		var dbContext = dbContextAccessor.HasDbContext
+			? dbContextAccessor.CurrentDbContext
+			: temporaryDbContext!;
+
+		var connection = dbContext.Database.GetDbConnection();
+		var hadExistingConnection = connection.State == ConnectionState.Open;
+		if (!hadExistingConnection)
+			await dbContext.Database.OpenConnectionAsync();
+
+		try
+		{
+			using var command = connection.CreateCommand();
+			command.Transaction = dbContext.Database.CurrentTransaction?.GetDbTransaction();
+			command.CommandText = query;
+
+			return await command.ExecuteScalarAsync();
+		}
+		finally
+		{
+			if (!hadExistingConnection)
+				await dbContext.Database.CloseConnectionAsync();
+		}
+	}
+
 	/// <summary>
-	/// Clears any services registered using <see cref="ConfigureServices(Action{IServiceCollection})"/>.
+	/// Creates the database, ensuring that it exists so that Initial Catalog can then be used to isolate the entire test to its own database.
 	/// </summary>
-	protected void ClearConfigureServices()
+	private void CreateDatabase()
 	{
-		if (this._host is not null) throw new Exception("No more configuration actions can be specified once the host is resolved.");
+		// To create or delete the database, we must connect without specifying it in the connection string
+		var connectionString = Regex.Replace(this.ConnectionString, "Initial Catalog=[^;]+", "");
 
-		this.HostBuilder = new HostBuilder();
+		using (var connection = new SqlConnection(connectionString))
+		using (var command = connection.CreateCommand())
+		{
+			command.CommandText = $"CREATE DATABASE {this.UniqueTestName} COLLATE {CoreDbContext.DefaultCollation};";
+
+			connection.Open();
+			command.ExecuteNonQuery();
+		}
+
+		using var dbContextScope = this.Host.Services.GetRequiredService<IDbContextProvider<CoreDbContext>>().CreateDbContextScope();
+		dbContextScope.DbContext.Database.EnsureCreated();
 	}
 
-	protected Task<int> ExecuteNonQuery(string query)
+	/// <summary>
+	/// <para>
+	/// Deletes the current test's database if it exists.
+	/// </para>
+	/// <para>
+	/// Note that the <em>DbContext's</em> connection string must use Pooling=False to avoid leftover open connections in the pool blocking the drop operation.
+	/// (Working alternative: https://stackoverflow.com/a/7469167/543814.)
+	/// </para>
+	/// </summary>
+	private void DeleteDatabase()
 	{
-		throw new NotImplementedException();
-	}
+		// To create or delete the database, we must connect without specifying it in the connection string
+		var connectionString = Regex.Replace(this.ConnectionString, "Initial Catalog=[^;]+", "");
 
-	protected Task<object?> ExecuteScalar(string query)
-	{
-		throw new NotImplementedException();
+		using var connection = new SqlConnection(connectionString);
+		using var command = connection.CreateCommand();
+
+		command.CommandText = $"DROP DATABASE IF EXISTS {this.UniqueTestName};";
+
+		connection.Open();
+		command.ExecuteNonQuery();
 	}
 }

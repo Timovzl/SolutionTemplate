@@ -1,3 +1,5 @@
+using System.Runtime.Serialization;
+
 namespace __ToDoAreaName__.__ToDoBoundedContextName__.Domain.Validation;
 
 /// <summary>
@@ -10,6 +12,7 @@ namespace __ToDoAreaName__.__ToDoBoundedContextName__.Domain.Validation;
 /// For example, a presentation layer could provide message translations, or an external system could respond in a preprogrammed way to predefined errors.
 /// </para>
 /// </summary>
+[Serializable]
 public class ValidationException : Exception
 {
 	// Message is inherited
@@ -63,7 +66,26 @@ public class ValidationException : Exception
 	private static string GetMessage(string errorCode, string? messageBody = null)
 	{
 		return messageBody is null
-			? $"Error {errorCode}: {errorCode}."
-			: $"Error {errorCode}: {messageBody}"; // The message body generally consists of one or more full sentences, i.e. with their own trailing dot
+			? $"{errorCode}: {errorCode}."
+			: $"{errorCode}: {messageBody}"; // The message body generally consists of one or more full sentences, i.e. with their own trailing dot
 	}
+
+	#region Serialization
+
+	protected ValidationException(SerializationInfo info, StreamingContext context)
+		: base(info, context)
+	{
+		this.ErrorCode = info.GetString("ErrorCode") ?? throw new IOException("Failed to deserialize: ErrorCode is missing.");
+		this.MessageBody = info.GetString("MessageBody") ?? this.ErrorCode;
+	}
+
+	public override void GetObjectData(SerializationInfo info, StreamingContext context)
+	{
+		base.GetObjectData(info, context);
+
+		info.AddValue("ErrorCode", this.ErrorCode);
+		info.AddValue("MessageBody", this.MessageBody);
+	}
+
+	#endregion
 }

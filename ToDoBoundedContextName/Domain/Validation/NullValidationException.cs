@@ -1,10 +1,12 @@
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 
 namespace __ToDoAreaName__.__ToDoBoundedContextName__.Domain.Validation;
 
 /// <summary>
 /// Similar to an <see cref="ArgumentNullException"/>, except in the form of a <see cref="ValidationException"/>.
 /// </summary>
+[Serializable]
 public class NullValidationException : ValidationException
 {
 	public string ParameterName { get; }
@@ -27,4 +29,21 @@ public class NullValidationException : ValidationException
 
 		return $"The following required data was missing: {parameterName}.";
 	}
+
+	#region Serialization
+
+	protected NullValidationException(SerializationInfo info, StreamingContext context)
+		: base(info, context)
+	{
+		this.ParameterName = info.GetString("ParameterName") ?? throw new IOException("Failed to deserialize: ParameterName is missing.");
+	}
+
+	public override void GetObjectData(SerializationInfo info, StreamingContext context)
+	{
+		base.GetObjectData(info, context);
+
+		info.AddValue("ParameterName", this.ParameterName);
+	}
+
+	#endregion
 }

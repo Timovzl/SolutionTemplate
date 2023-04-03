@@ -2,14 +2,14 @@
 
 	<PropertyGroup>
 		<!-- Any 3.1+ target provides nullable annotations -->
-		<TargetFrameworks>net6.0;netstandard2.0</TargetFrameworks>
+		<TargetFrameworks>net7.0;netstandard2.0</TargetFrameworks>
 		<AssemblyName>__ToDoAreaName__.__ToDoBoundedContextName__.Contracts</AssemblyName>
 		<RootNamespace>__ToDoAreaName__.__ToDoBoundedContextName__.Contracts</RootNamespace>
 		<Nullable>Enable</Nullable>
 		<ImplicitUsings>Enable</ImplicitUsings>
-		<LangVersion>10</LangVersion>
+		<LangVersion>11</LangVersion>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-		<Version>0.0.1</Version>
+		<Version>0.1.0</Version>
 	</PropertyGroup>
 	
 	<ItemGroup>

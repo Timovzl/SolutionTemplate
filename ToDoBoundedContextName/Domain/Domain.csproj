@@ -1,25 +1,28 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
 		<AssemblyName>__ToDoAreaName__.__ToDoBoundedContextName__.Domain</AssemblyName>
 		<RootNamespace>__ToDoAreaName__.__ToDoBoundedContextName__.Domain</RootNamespace>
-		<Nullable>Enable</Nullable>
-		<ImplicitUsings>Enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<!-- IDE0079: Remove unnecessary suppression // Used to suppress nullability warnings for reconstitution constructors -->
+		<NoWarn>IDE0079</NoWarn>
 	</PropertyGroup>
 	
 	<ItemGroup>
 		<InternalsVisibleTo Include="$(AssemblyName).UnitTests" />
+		<InternalsVisibleTo Include="__ToDoAreaName__.__ToDoBoundedContextName__.Application.IntegrationTests" />
+		<InternalsVisibleTo Include="__ToDoAreaName__.__ToDoBoundedContextName__.Application.UnitTests" />
 		<InternalsVisibleTo Include="__ToDoAreaName__.__ToDoBoundedContextName__.Testing.Common" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Architect.AmbientContexts" Version="1.1.1" />
-		<PackageReference Include="Architect.Identities" Version="1.0.2" />
-		<PackageReference Include="Architect.DomainModeling" Version="1.0.3" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-		<PackageReference Include="prometheus-net.AspNetCore" Version="6.0.0" />
-		<PackageReference Include="Scrutor" Version="4.1.0" />
+		<PackageReference Include="Architect.DomainModeling" />
+		<PackageReference Include="Architect.Identities" />
+		<PackageReference Include="Newtonsoft.Json" />
+		<PackageReference Include="prometheus-net.AspNetCore" />
+		<PackageReference Include="Scrutor" />
 	</ItemGroup>
 
 </Project>
