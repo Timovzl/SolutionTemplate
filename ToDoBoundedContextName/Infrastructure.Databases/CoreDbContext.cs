@@ -18,7 +18,7 @@ internal sealed class CoreDbContext : DbContext, ICoreDatabase
 	/// <summary>
 	/// Our preferred binary collation: a binary, case-sensitive collation that matches .NET's <see cref="StringComparison.Ordinal"/>.
 	/// </summary>
-	public const string BinaryCollation = "Latin1_General_100_BIN2";
+	public const string BinaryCollation = "Latin1_General_100_BIN2_UTF8";
 	/// <summary>
 	/// <para>
 	/// Our preferred culture-sensitive collation: a culture-sensitive, ignore-case, accent-sensitive collation.
@@ -27,7 +27,7 @@ internal sealed class CoreDbContext : DbContext, ICoreDatabase
 	/// Use this collation only for non-indexed (or at the very least non-FK) columns, such as titles and descriptions.
 	/// </para>
 	/// </summary>
-	public const string CulturalCollation = "Latin1_General_100_CI_AS";
+	public const string CulturalCollation = "Latin1_General_100_CI_AS_SC_UTF8";
 	/// <summary>
 	/// Our default collation, used for textual columns that do not specify one.
 	/// </summary>
