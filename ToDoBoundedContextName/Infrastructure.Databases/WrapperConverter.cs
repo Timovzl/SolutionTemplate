@@ -21,11 +21,13 @@ namespace __ToDoAreaName__.__ToDoBoundedContextName__.Infrastructure.Databases;
 /// </summary>
 internal sealed class WrapperConverter<TModel, TProvider> : ValueConverter<TModel, TProvider>
 {
-	private static readonly MethodInfo GetUninitializedObjectMethod = typeof(FormatterServices).GetMethod(nameof(FormatterServices.GetUninitializedObject))!;
+	private delegate void FieldAssignmentFunction(ref TModel instance, TProvider value);
 
-	private static readonly Lazy<Func<object, TProvider, object>> FieldSetter = new Lazy<Func<object, TProvider, object>>(
+	private static readonly Lazy<FieldAssignmentFunction> FieldSetter = new Lazy<FieldAssignmentFunction>(
 		() => CreateFieldSetter(GetExpectedField()),
 		LazyThreadSafetyMode.ExecutionAndPublication);
+
+	private static readonly MethodInfo GetUninitializedObjectMethod = typeof(FormatterServices).GetMethod(nameof(FormatterServices.GetUninitializedObject))!;
 
 	public WrapperConverter()
 		: base(CreateConversionToProviderExpression(), CreateConversionToModelExpression())
@@ -43,29 +45,57 @@ internal sealed class WrapperConverter<TModel, TProvider> : ValueConverter<TMode
 	{
 		var field = GetExpectedField();
 
+		// TModel instance;
 		var param = Expression.Parameter(typeof(TModel), "instance");
-		var fieldAccess = Expression.Field(param, field);
-		var conversion = Expression.Lambda<Func<TModel, TProvider>>(fieldAccess, param);
 
+		// return instance.Field;
+		var fieldAccess = Expression.Field(param, field);
+
+		var conversion = Expression.Lambda<Func<TModel, TProvider>>(fieldAccess, param);
 		return conversion;
 	}
 
 	private static Expression<Func<TProvider, TModel>> CreateConversionToModelExpression()
 	{
+		// TProvider value;
 		var param = Expression.Parameter(typeof(TProvider), "value");
-		var instance = Expression.Call(GetUninitializedObjectMethod, arguments: Expression.Constant(typeof(TModel)));
-		var assignmentAndInstanceResult = Expression.Invoke(Expression.Constant(FieldSetter.Value), instance, param);
-		var typedInstanceResult = Expression.Convert(assignmentAndInstanceResult, typeof(TModel));
-		var conversion = Expression.Lambda<Func<TProvider, TModel>>(typedInstanceResult, param);
 
+		// TModel instance;
+		var instanceVariable = Expression.Variable(typeof(TModel), "instance");
+
+		var block = Expression.Block(
+			variables: new[] { instanceVariable },
+			expressions: new Expression[]
+			{
+				// instance = default(TModel);
+				// -- or --
+				// instance = (TModel)FormatterServices.GetUninitializedObject(typeof(TModel));
+				typeof(TModel).IsValueType
+					? Expression.Assign(instanceVariable, Expression.Constant(default(TModel)))
+					: Expression.Assign(instanceVariable, Expression.Convert(
+						Expression.Call(GetUninitializedObjectMethod, arguments: Expression.Constant(typeof(TModel))),
+						typeof(TModel))),
+
+				// SetField(ref instance, value);
+				Expression.Invoke(Expression.Constant(FieldSetter.Value), instanceVariable, param),
+
+				// return instance;
+				instanceVariable,
+			});
+
+		var conversion = Expression.Lambda<Func<TProvider, TModel>>(block, param);
 		return conversion;
 	}
 
 	/// <summary>
-	/// Creates a new function that can write to a field.
-	/// The result works as expected, even for readonly fields and structs.
+	/// <para>
+	/// For a particular field, this compiles a new function that writes that field for a given instance, assigning a given value.
+	/// </para>
+	/// <para>
+	/// Supports structs. Supports readonly fields.
+	/// </para>
 	/// </summary>
-	private static Func<object, TProvider, object> CreateFieldSetter(FieldInfo field)
+	private static FieldAssignmentFunction CreateFieldSetter(FieldInfo field)
 	{
 		// We must write IL to achieve the following:
 		// - Write to readonly fields
@@ -73,29 +103,22 @@ internal sealed class WrapperConverter<TModel, TProvider> : ValueConverter<TMode
 
 		var setter = new DynamicMethod(
 			name: $"SetFieldValue_{field.DeclaringType?.Name}_{field.Name}",
-			returnType: typeof(object),
-			parameterTypes: new[] { typeof(object), typeof(TProvider), },
+			returnType: typeof(void),
+			parameterTypes: new[] { typeof(TModel).MakeByRefType(), typeof(TProvider), },
 			m: typeof(WrapperConverter<TModel, TProvider>).Module,
 			skipVisibility: true);
 
 		var ilGenerator = setter.GetILGenerator();
 
-		ilGenerator.Emit(OpCodes.Ldarg_0); // Load the instance to write to, which will be our return value
-		ilGenerator.Emit(OpCodes.Ldarg_0); // Load the instance to write to
+		ilGenerator.Emit(OpCodes.Ldarg_0); // Load the reference to the instance to write to
 
-		// For value-type instances
-		if (field.DeclaringType?.IsValueType == true)
-		{
-			ilGenerator.DeclareLocal(field.DeclaringType.MakeByRefType()); // Create a local by-ref var
-			ilGenerator.Emit(OpCodes.Unbox, field.DeclaringType); // Unbox the object
-			ilGenerator.Emit(OpCodes.Stloc_0); // Assign the result of the unboxing to the by-ref var
-			ilGenerator.Emit(OpCodes.Ldloc_0); // Load the by-ref var for us to write to
-		}
+		if (!typeof(TModel).IsValueType)
+			ilGenerator.Emit(OpCodes.Ldind_Ref); // For a reference type, dereference the double indirection
 
 		ilGenerator.Emit(OpCodes.Ldarg_1); // Load the value to be assigned
 		ilGenerator.Emit(OpCodes.Stfld, field); // Assign the new value to the instance's field
 		ilGenerator.Emit(OpCodes.Ret); // Return
 
-		return setter.CreateDelegate<Func<object, TProvider, object>>();
+		return setter.CreateDelegate<FieldAssignmentFunction>();
 	}
 }
