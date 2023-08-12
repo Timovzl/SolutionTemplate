@@ -1,7 +1,9 @@
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.Serialization;
+using Architect.DomainModeling;
 using Architect.Identities.EntityFramework;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -19,10 +21,12 @@ namespace __ToDoAreaName__.__ToDoBoundedContextName__.Infrastructure.Databases;
 /// </summary>
 internal sealed class CoreDbContext : DbContext, ICoreDatabase
 {
+	// UTF-8 (e.g. Latin1_General_100_BIN2_UTF8/Latin1_General_100_CI_AS_SC_UTF8) is avoided because its lengths are in bytes (easy to mismatch with validations in .NET) and it requires IsUnicode() and UseColumnType()
+
 	/// <summary>
 	/// Our preferred binary collation: a binary, case-sensitive collation that matches .NET's <see cref="StringComparison.Ordinal"/>.
 	/// </summary>
-	public const string BinaryCollation = "Latin1_General_100_BIN2_UTF8";
+	public const string BinaryCollation = "Latin1_General_100_BIN2";
 	/// <summary>
 	/// <para>
 	/// Our preferred culture-sensitive collation: a culture-sensitive, ignore-case, accent-sensitive collation.
@@ -31,7 +35,7 @@ internal sealed class CoreDbContext : DbContext, ICoreDatabase
 	/// Use this collation only for non-indexed (or at the very least non-FK) columns, such as titles and descriptions.
 	/// </para>
 	/// </summary>
-	public const string CulturalCollation = "Latin1_General_100_CI_AS_SC_UTF8";
+	public const string CulturalCollation = "Latin1_General_100_CI_AS";
 	/// <summary>
 	/// Our default collation, used for textual columns that do not specify one.
 	/// </summary>
@@ -104,7 +108,7 @@ internal sealed class CoreDbContext : DbContext, ICoreDatabase
 		configurationBuilder.Conventions.Add(_ => new UninitializedInstantiationConvention());
 		configurationBuilder.Conventions.Add(_ => new LimitedPrecisionDecimalConvention());
 		configurationBuilder.Conventions.Add(_ => new MonetaryAmountConvention());
-		
+
 		configurationBuilder.ConfigureDecimalIdTypes(typeof(DomainRegistrationExtensions).Assembly);
 
 		configurationBuilder.Properties<DateTime>()
