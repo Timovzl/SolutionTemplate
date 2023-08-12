@@ -4,7 +4,6 @@
 		<AssemblyName>__ToDoAreaName__.__ToDoBoundedContextName__.Api</AssemblyName>
 		<RootNamespace>__ToDoAreaName__.__ToDoBoundedContextName__.Api</RootNamespace>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-		<InvariantGlobalization>True</InvariantGlobalization>
 	</PropertyGroup>
 
 	<ItemGroup>

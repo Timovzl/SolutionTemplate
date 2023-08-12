@@ -3,7 +3,6 @@
 	<PropertyGroup>
 		<AssemblyName>__ToDoAreaName__.__ToDoBoundedContextName__.JobRunner</AssemblyName>
 		<RootNamespace>__ToDoAreaName__.__ToDoBoundedContextName__.JobRunner</RootNamespace>
-		<InvariantGlobalization>True</InvariantGlobalization>
 	</PropertyGroup>
 
 	<ItemGroup>
