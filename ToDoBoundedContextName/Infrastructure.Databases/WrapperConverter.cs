@@ -27,7 +27,7 @@ internal sealed class WrapperConverter<TModel, TProvider> : ValueConverter<TMode
 		() => CreateFieldSetter(GetExpectedField()),
 		LazyThreadSafetyMode.ExecutionAndPublication);
 
-	private static readonly MethodInfo GetUninitializedObjectMethod = typeof(FormatterServices).GetMethod(nameof(FormatterServices.GetUninitializedObject))!;
+	private static MethodInfo MethodInfoForGetUninitializedObject => typeof(FormatterServices).GetMethod(nameof(FormatterServices.GetUninitializedObject))!;
 
 	public WrapperConverter()
 		: base(CreateConversionToProviderExpression(), CreateConversionToModelExpression())
@@ -73,7 +73,7 @@ internal sealed class WrapperConverter<TModel, TProvider> : ValueConverter<TMode
 				typeof(TModel).IsValueType
 					? Expression.Assign(instanceVariable, Expression.Constant(default(TModel)))
 					: Expression.Assign(instanceVariable, Expression.Convert(
-						Expression.Call(GetUninitializedObjectMethod, arguments: Expression.Constant(typeof(TModel))),
+						Expression.Call(MethodInfoForGetUninitializedObject, arguments: Expression.Constant(typeof(TModel))),
 						typeof(TModel))),
 
 				// SetField(ref instance, value);
