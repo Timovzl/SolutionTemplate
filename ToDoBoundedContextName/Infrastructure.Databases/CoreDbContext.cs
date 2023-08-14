@@ -247,7 +247,7 @@ internal sealed class CoreDbContext : DbContext, ICoreDatabase
 
 			// A note on comparisons:
 			// For non-key properties, EF uses the WrapperValueObject's own comparison methods, which the developer should have aligned with the column type and collation
-			// For properties configured as database keys, EF compares the PROVIDER values, i.e. the underlying primitives
+			// For properties configured as database keys, EF compares the PROVIDER values, i.e. the underlying primitives (https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-7.0/breaking-changes#provider-value-comparer)
 			// The latter comparison is assumed to be correct by default, except for strings, which are covered by the StringCasingConvention
 		}
 	}
