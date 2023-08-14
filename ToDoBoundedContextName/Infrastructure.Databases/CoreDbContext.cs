@@ -106,6 +106,8 @@ internal sealed class CoreDbContext : DbContext, ICoreDatabase
 		configurationBuilder.Conventions.Remove(typeof(PropertyDiscoveryConvention));
 
 		configurationBuilder.Conventions.Add(_ => new UninitializedInstantiationConvention());
+		configurationBuilder.Conventions.Add(_ => new StringCasingConvention());
+		configurationBuilder.Conventions.Add(_ => new WrapperValueObjectConversionConvention());
 		configurationBuilder.Conventions.Add(_ => new LimitedPrecisionDecimalConvention());
 		configurationBuilder.Conventions.Add(_ => new MonetaryAmountConvention());
 
@@ -179,6 +181,74 @@ internal sealed class CoreDbContext : DbContext, ICoreDatabase
 			{
 				return this;
 			}
+		}
+	}
+
+	/// <summary>
+	/// A convention that uses string comparisons with case-sensitivity matching each relevant column's collation, for every property mapped to a string column.
+	/// This helps align comparisons with those made by the database.
+	/// </summary>
+	private sealed class StringCasingConvention : IModelFinalizingConvention
+	{
+		private static readonly ValueComparer OrdinalComparer = new ValueComparer<string>(
+			equalsExpression: (left, right) => String.Equals(left, right, StringComparison.Ordinal),
+			hashCodeExpression: value => String.GetHashCode(value, StringComparison.Ordinal),
+			snapshotExpression: value => value);
+
+		private static readonly ValueComparer OrdinalIgnoreCaseComparer = new ValueComparer<string>(
+			equalsExpression: (left, right) => String.Equals(left, right, StringComparison.OrdinalIgnoreCase),
+			hashCodeExpression: value => String.GetHashCode(value, StringComparison.OrdinalIgnoreCase),
+			snapshotExpression: value => value);
+
+		public void ProcessModelFinalizing(IConventionModelBuilder modelBuilder, IConventionContext<IConventionModelBuilder> context)
+		{
+			foreach (var property in modelBuilder.Metadata.GetEntityTypes().SelectMany(entityBuilder => entityBuilder.GetProperties()))
+			{
+				// Either a plain string property or a property mapped to string
+				if (property.ClrType != typeof(string) && property.GetValueConverter()?.ProviderClrType != typeof(string))
+					continue;
+
+				var collation = property.FindAnnotation(RelationalAnnotationNames.Collation) ??
+					modelBuilder.Metadata.FindAnnotation(RelationalAnnotationNames.Collation);
+
+				// Use case-sensitive comparisons unless ignore-case is explicitly used by the collation
+				var comparer = collation?.Value is string collationName && collationName.Contains("_CI", StringComparison.OrdinalIgnoreCase)
+					? OrdinalIgnoreCaseComparer
+					: OrdinalComparer;
+
+				// We already confirmed that the provider type is string
+				if (property.GetProviderValueComparer() is null)
+					property.SetProviderValueComparer(comparer, fromDataAnnotation: true); // Using fromDataAnnotation=true allows explicit configuration to override ours
+
+				// The model type COULD be string
+				if (property.ClrType == typeof(string) && property.GetValueComparer() is null)
+					property.SetValueComparer(comparer, fromDataAnnotation: true); // Using fromDataAnnotation=true allows explicit configuration to override ours
+			}
+		}
+	}
+
+	/// <summary>
+	/// A convention that uses <see cref="WrapperConverter{TModel, TProvider}"/> to convert types inheriting from <see cref="WrapperValueObject{TValue}"/>.
+	/// </summary>
+	private sealed class WrapperValueObjectConversionConvention : IPropertyAddedConvention
+	{
+		public void ProcessPropertyAdded(IConventionPropertyBuilder propertyBuilder, IConventionContext<IConventionPropertyBuilder> context)
+		{
+			var baseType = propertyBuilder.Metadata.ClrType.BaseType;
+
+			// Only wrapper value objects
+			if (baseType?.IsGenericType != true || baseType.GetGenericTypeDefinition() != typeof(WrapperValueObject<>))
+				return;
+
+			var modelType = propertyBuilder.Metadata.ClrType;
+			var providerType = baseType.GenericTypeArguments[0];
+
+			propertyBuilder.Metadata.SetValueConverter(typeof(WrapperConverter<,>).MakeGenericType(modelType, providerType), fromDataAnnotation: true); // Using fromDataAnnotation=true allows explicit configuration to override ours
+
+			// A note on comparisons:
+			// For non-key properties, EF uses the WrapperValueObject's own comparison methods, which the developer should have aligned with the column type and collation
+			// For properties configured as database keys, EF compares the PROVIDER values, i.e. the underlying primitives
+			// The latter comparison is assumed to be correct by default, except for strings, which are covered by the StringCasingConvention
 		}
 	}
 
