@@ -1,11 +1,10 @@
-using System.Collections.Concurrent;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace __ToDoAreaName__.__ToDoBoundedContextName__.Infrastructure.Databases;
+namespace __ToDoAreaName__.__ToDoBoundedContextName__.Infrastructure.Databases.Shared.Converters;
 
 /// <summary>
 /// <para>

@@ -1,4 +1,4 @@
-namespace __ToDoAreaName__.__ToDoBoundedContextName__.Infrastructure.Databases;
+namespace __ToDoAreaName__.__ToDoBoundedContextName__.Infrastructure.Databases.Shared;
 
 /// <summary>
 /// Abstract base class for a repository.
