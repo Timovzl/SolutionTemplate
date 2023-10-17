@@ -3,13 +3,9 @@
 	<PropertyGroup>
 		<AssemblyName>__ToDoAreaName__.__ToDoBoundedContextName__.Domain</AssemblyName>
 		<RootNamespace>__ToDoAreaName__.__ToDoBoundedContextName__.Domain</RootNamespace>
+		<NuGetAudit>True</NuGetAudit>
 	</PropertyGroup>
 
-	<PropertyGroup>
-		<!-- IDE0079: Remove unnecessary suppression // Used to suppress nullability warnings for reconstitution constructors -->
-		<NoWarn>IDE0079</NoWarn>
-	</PropertyGroup>
-	
 	<ItemGroup>
 		<InternalsVisibleTo Include="$(AssemblyName).UnitTests" />
 		<InternalsVisibleTo Include="__ToDoAreaName__.__ToDoBoundedContextName__.Application.IntegrationTests" />
