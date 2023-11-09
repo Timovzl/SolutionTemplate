@@ -27,6 +27,7 @@ dotnet_diagnostic.CA1822.severity = none # CA1822: Instance member does not acce
 dotnet_diagnostic.CS1573.severity = none # CS1573: Undocumented public symbol while -doc compiler option is used
 dotnet_diagnostic.CS1591.severity = none # CS1591: Missing XML comment for publicly visible type
 dotnet_diagnostic.CA1816.severity = default # CA1816: Dispose() should call GC.SuppressFinalize()
+dotnet_code_quality.CA1826.exclude_ordefault_methods = true # CA1826: Use property instead of Linq Enumerable method -- hard to replace for ...OrDefault()
 
 # Indentation and spacing
 indent_size = 4
