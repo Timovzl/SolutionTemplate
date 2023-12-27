@@ -7,23 +7,20 @@ namespace __ToDoAreaName__.__ToDoBoundedContextName__.JobRunner;
 /// <summary>
 /// Adds job metadata to the ambient <see cref="ILogger"/> scope for the duration of <see cref="Hangfire"/> job runs.
 /// </summary>
-internal sealed class HangfireJobLogEnricherAttribute : JobFilterAttribute, IServerFilter
+internal sealed class HangfireJobLogEnricherAttribute(
+	ILogger<HangfireJobLogEnricherAttribute> logger)
+	: JobFilterAttribute, IServerFilter
 {
 	private static readonly ConditionalWeakTable<string, IDisposable> LogScopes = new ConditionalWeakTable<string, IDisposable>();
 
-	private ILogger<HangfireJobLogEnricherAttribute> Logger { get; }
-
-	public HangfireJobLogEnricherAttribute(ILogger<HangfireJobLogEnricherAttribute> logger)
-	{
-		this.Logger = logger;
-	}
+	private ILogger<HangfireJobLogEnricherAttribute> Logger { get; } = logger;
 
 	public void OnPerforming(PerformingContext filterContext)
 	{
 		IDisposable? logScope = null;
 		try
 		{
-			logScope = this.Logger.BeginScope(new KeyValuePair<string, object>[]
+			logScope = logger.BeginScope(new KeyValuePair<string, object>[]
 			{
 				KeyValuePair.Create("Job", (object)filterContext.BackgroundJob.Job.Type.Name),
 				KeyValuePair.Create("JobRunId", (object)filterContext.BackgroundJob.Id),

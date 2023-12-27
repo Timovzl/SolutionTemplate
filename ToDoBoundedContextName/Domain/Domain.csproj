@@ -6,6 +6,11 @@
 		<NuGetAudit>True</NuGetAudit>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<!-- IDE0290: Use primary constructor - domain objects tend to have complex ctor logic, and we want to be consistent even when ctors are simple -->
+		<NoWarn>IDE0290</NoWarn>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<InternalsVisibleTo Include="$(AssemblyName).UnitTests" />
 		<InternalsVisibleTo Include="__ToDoAreaName__.__ToDoBoundedContextName__.Application.IntegrationTests" />

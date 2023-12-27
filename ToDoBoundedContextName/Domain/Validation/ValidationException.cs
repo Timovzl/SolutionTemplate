@@ -72,6 +72,7 @@ public class ValidationException : Exception
 
 	#region Serialization
 
+	[Obsolete("Exists because base class has serializable attribute, which strict tools then expect on subclasses as well", DiagnosticId = "SYSLIB0051")]
 	protected ValidationException(SerializationInfo info, StreamingContext context)
 		: base(info, context)
 	{
@@ -79,6 +80,7 @@ public class ValidationException : Exception
 		this.MessageBody = info.GetString("MessageBody") ?? this.ErrorCode;
 	}
 
+	[Obsolete("Exists because base class has serializable attribute, which strict tools then expect on subclasses as well", DiagnosticId = "SYSLIB0051")]
 	public override void GetObjectData(SerializationInfo info, StreamingContext context)
 	{
 		base.GetObjectData(info, context);

@@ -8,7 +8,7 @@ public static class EnumExtensions
 		where T : struct, Enum
 	{
 		public static readonly ImmutableArray<T> SortedValues = Enum.GetValues<T>()
-			.OrderBy(value => value)
+			.Order()
 			.ToImmutableArray();
 	}
 

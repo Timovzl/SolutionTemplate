@@ -1,15 +1,10 @@
 <Project>
 
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>Enable</Nullable>
 		<ImplicitUsings>Enable</ImplicitUsings>
 		<ManagePackageVersionsCentrally>True</ManagePackageVersionsCentrally>
-	</PropertyGroup>
-
-	<PropertyGroup>
-		<!-- Use throw helpers - throws helpers are inconsistent with neighboring checks for which none can be used -->
-		<NoWarn>CA1510,CA1511,CA1512,CA1513</NoWarn>
 	</PropertyGroup>
 
 </Project>

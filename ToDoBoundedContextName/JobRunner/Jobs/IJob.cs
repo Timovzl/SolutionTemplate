@@ -2,7 +2,7 @@ using Hangfire;
 
 namespace __ToDoAreaName__.__ToDoBoundedContextName__.JobRunner.Jobs;
 
-internal interface IJob
+public interface IJob
 {
 	string CronSchedule { get; }
 

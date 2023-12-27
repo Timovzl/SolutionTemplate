@@ -1,5 +1,6 @@
 using __ToDoAreaName__.__ToDoBoundedContextName__.Application;
 using __ToDoAreaName__.__ToDoBoundedContextName__.Infrastructure.Databases;
+using __ToDoAreaName__.__ToDoBoundedContextName__.JobRunner.Filters;
 using __ToDoAreaName__.__ToDoBoundedContextName__.JobRunner.Jobs;
 using Hangfire;
 using Hangfire.Prometheus.NetCore;
@@ -50,7 +51,7 @@ public static class Program
 			"/jobs",
 			new DashboardOptions()
 			{
-				Authorization = new[] { new HangfireNoAuthorizationFilter() },
+				Authorization = [new HangfireNoAuthorizationFilter()],
 				DashboardTitle = "__ToDoBoundedContextName__ Jobs",
 				DisplayStorageConnectionString = false,
 			});

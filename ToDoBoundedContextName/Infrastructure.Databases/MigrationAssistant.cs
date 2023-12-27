@@ -15,20 +15,12 @@ namespace __ToDoAreaName__.__ToDoBoundedContextName__.Infrastructure.Databases;
 /// Although <see cref="MigrateAsync"/> can be invoked directly, that method is normally invoked by registering this type as <see cref="IHostedService"/> and starting the host.
 /// </para>
 /// </summary>
-internal sealed class MigrationAssistant<TDbContext> : IHostedService
+internal sealed class MigrationAssistant<TDbContext>(
+	ILogger<MigrationAssistant<TDbContext>> logger,
+	IDbContextFactory<TDbContext> dbContextFactory)
+	: IHostedService
 	where TDbContext : DbContext
 {
-	private ILogger<MigrationAssistant<TDbContext>> Logger { get; }
-	private IDbContextFactory<TDbContext> DbContextFactory { get; }
-
-	public MigrationAssistant(
-		ILogger<MigrationAssistant<TDbContext>> logger,
-		IDbContextFactory<TDbContext> dbContextFactory)
-	{
-		this.Logger = logger;
-		this.DbContextFactory = dbContextFactory;
-	}
-
 	public Task StartAsync(CancellationToken cancellationToken)
 	{
 		return this.MigrateAsync(cancellationToken);
@@ -46,30 +38,30 @@ internal sealed class MigrationAssistant<TDbContext> : IHostedService
 	{
 		// Ensure that the database exists
 		// The DbContext must be disposed immediately after this, since a potential ALTER DATABASE query may close the connection from the server's end
-		await using (var dbContext = await this.DbContextFactory.CreateDbContextAsync(cancellationToken))
+		await using (var dbContext = await dbContextFactory.CreateDbContextAsync(cancellationToken))
 		{
 			var appliedMigrations = await dbContext.Database.GetAppliedMigrationsAsync(cancellationToken);
 			if (!appliedMigrations.Any())
 			{
-				this.Logger.LogInformation("Creating {DbContext} database by migrating to version 0", typeof(TDbContext).Name);
+				logger.LogInformation("Creating {DbContext} database by migrating to version 0", typeof(TDbContext).Name);
 				await this.PerformMigrationZeroAsync(cancellationToken);
 			}
 		}
 
-		this.Logger.LogInformation("Awaiting exclusive lock to migrate {DbContext}", typeof(TDbContext).Name);
+		logger.LogInformation("Awaiting exclusive lock to migrate {DbContext}", typeof(TDbContext).Name);
 
-		await using var migrationLock = await MigrationLock.AcquireAsync(this.DbContextFactory, cancellationToken);
+		await using var migrationLock = await MigrationLock.AcquireAsync(dbContextFactory, cancellationToken);
 
 		// Overwrite the cancellation token so that it also honors the migration lock's token
 		using var combinedCancellationSource = CancellationTokenSource.CreateLinkedTokenSource(migrationLock.CancellationToken, cancellationToken);
 		cancellationToken = combinedCancellationSource.Token;
 
-		this.Logger.LogInformation("Migrating {DbContext}", typeof(TDbContext).Name);
+		logger.LogInformation("Migrating {DbContext}", typeof(TDbContext).Name);
 
-		await using (var dbContext = await this.DbContextFactory.CreateDbContextAsync(cancellationToken))
+		await using (var dbContext = await dbContextFactory.CreateDbContextAsync(cancellationToken))
 			await dbContext.Database.MigrateAsync(cancellationToken);
 
-		this.Logger.LogInformation("Migrated {DbContext}", typeof(TDbContext).Name);
+		logger.LogInformation("Migrated {DbContext}", typeof(TDbContext).Name);
 	}
 
 	/// <summary>
@@ -87,7 +79,7 @@ internal sealed class MigrationAssistant<TDbContext> : IHostedService
 	/// </summary>
 	private async Task PerformMigrationZeroAsync(CancellationToken cancellationToken)
 	{
-		await using var dbContext = await this.DbContextFactory.CreateDbContextAsync(cancellationToken);
+		await using var dbContext = await dbContextFactory.CreateDbContextAsync(cancellationToken);
 
 		// If there is an initial migration that sets the database collation, migrate to it (in case the database already existed but had the wrong collation, e.g. in non-local environments)
 		// Otherwise, migrate to "0", i.e. just before the first migration

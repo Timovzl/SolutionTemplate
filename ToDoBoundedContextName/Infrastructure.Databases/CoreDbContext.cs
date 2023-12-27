@@ -1,4 +1,3 @@
-using Architect.Identities.EntityFramework;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using __ToDoAreaName__.__ToDoBoundedContextName__.Application;
 using __ToDoAreaName__.__ToDoBoundedContextName__.Domain;
@@ -9,7 +8,9 @@ namespace __ToDoAreaName__.__ToDoBoundedContextName__.Infrastructure.Databases;
 /// <summary>
 /// The DbContext for the bounded context's core database.
 /// </summary>
-internal sealed class CoreDbContext : DbContext, ICoreDatabase
+public sealed class CoreDbContext(
+	DbContextOptions<CoreDbContext> options)
+	: DbContext(options), ICoreDatabase
 {
 	// UTF-8 (e.g. Latin1_General_100_BIN2_UTF8/Latin1_General_100_CI_AS_SC_UTF8) is avoided because its lengths are in bytes (easy to mismatch with validations in .NET) and it requires IsUnicode() and UseColumnType()
 
@@ -36,11 +37,6 @@ internal sealed class CoreDbContext : DbContext, ICoreDatabase
 	/// Note that the instance may have already been returned to the pool if <see cref="DbContext"/> pooling is enabled.
 	/// </summary>
 	internal static event Action<CoreDbContext>? DbContextDisposed;
-
-	public CoreDbContext(DbContextOptions<CoreDbContext> options)
-		: base(options)
-	{
-	}
 
 	public override void Dispose()
 	{
@@ -73,31 +69,32 @@ internal sealed class CoreDbContext : DbContext, ICoreDatabase
 		base.ConfigureConventions(configurationBuilder);
 
 		// We map things explicitly
-		configurationBuilder.Conventions.Remove(typeof(ConstructorBindingConvention));
-		configurationBuilder.Conventions.Remove(typeof(RelationshipDiscoveryConvention));
-		configurationBuilder.Conventions.Remove(typeof(PropertyDiscoveryConvention));
+		configurationBuilder.Conventions.Remove<ConstructorBindingConvention>();
+		configurationBuilder.Conventions.Remove<RelationshipDiscoveryConvention<();
+		configurationBuilder.Conventions.Remove<PropertyDiscoveryConvention>();
 
-		configurationBuilder.Conventions.Add(_ => new UninitializedInstantiationConvention());
+		configurationBuilder.Conventions.Add(services => ActivatorUtilities.CreateInstance<ConstructorBindingConvention>(services)); // Workaround for ComplexProperty() bug that requires ConstructorBindingConvention to be present (but it can fail if run before UninitializedInstantiationConvention): https://github.com/dotnet/efcore/issues/32437
 		configurationBuilder.Conventions.Add(_ => new StringCasingConvention());
-		configurationBuilder.Conventions.Add(_ => new WrapperValueObjectConversionConvention());
 		configurationBuilder.Conventions.Add(_ => new LimitedPrecisionDecimalConvention());
 		configurationBuilder.Conventions.Add(_ => new MonetaryAmountConvention());
 
-		configurationBuilder.ConfigureDecimalIdTypes(typeof(DomainRegistrationExtensions).Assembly);
+		configurationBuilder.ConfigureDomainModelConventions(domainModel =>
+		{
+			domainModel.ConfigureIdentityConventions();
+			domainModel.ConfigureWrapperValueObjectConventions();
+			domainModel.ConfigureEntityConventions();
+			domainModel.ConfigureDomainEventConventions();
+		});
 
 		configurationBuilder.Properties<DateTime>()
 			.HaveConversion<UtcDateTimeConverter>()
 			.HavePrecision(3);
 
-		configurationBuilder.Properties<DateOnly>()
-			.HaveConversion<DateOnlyConverter>()
-			.HaveColumnType("date");
-
-		// Configure default precision for (non-ID) decimals outside of properties (e.g. in CAST(), SUM(), AVG(), etc.)
+		// Configure default precision for decimals outside of properties (e.g. in CAST(), SUM(), AVG(), etc.)
 		configurationBuilder.DefaultTypeMapping<decimal>()
 			.HasPrecision(19, 9);
 
-		// Configure default precision for (non-ID) decimal properties
+		// Configure default precision for decimal properties
 		configurationBuilder.Properties<decimal>()
 			.HavePrecision(19, 9);
 

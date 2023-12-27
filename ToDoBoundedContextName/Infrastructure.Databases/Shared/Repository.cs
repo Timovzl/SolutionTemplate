@@ -3,7 +3,7 @@ namespace __ToDoAreaName__.__ToDoBoundedContextName__.Infrastructure.Databases.S
 /// <summary>
 /// Abstract base class for a repository.
 /// </summary>
-internal abstract class Repository<TEntity>
+public abstract class Repository<TEntity>
 	where TEntity : class
 {
 	/// <summary>

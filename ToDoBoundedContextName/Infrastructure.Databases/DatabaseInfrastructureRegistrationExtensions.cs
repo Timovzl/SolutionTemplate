@@ -14,10 +14,10 @@ public static class DatabaseInfrastructureRegistrationExtensions
 
 		services.AddPooledDbContextFactory<CoreDbContext>(dbContext => dbContext
 			.UseSqlServer(config.GetConnectionString("CoreDatabase")!, sqlServer => sqlServer.EnableRetryOnFailure())
-			.AddInterceptors(new[]
-			{
+			.AddInterceptors(
+			[
 				orphanedDomainObjectInterceptor,
-			}));
+			]));
 
 		services.AddDbContextScope<ICoreDatabase, CoreDbContext>(scope => scope
 			.ExecutionStrategyOptions(ExecutionStrategyOptions.RetryOnOptimisticConcurrencyFailure)

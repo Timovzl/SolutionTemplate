@@ -9,22 +9,14 @@ namespace __ToDoAreaName__.__ToDoBoundedContextName__.Application.ExceptionHandl
 /// <summary>
 /// A global handler for uncaught exceptions during request handling.
 /// </summary>
-public class RequestExceptionHandler
+public sealed class RequestExceptionHandler(
+	IHostApplicationLifetime hostApplicationLifetime,
+	IHttpContextAccessor httpContextAccessor,
+	ILogger<RequestExceptionHandler> logger)
 {
-	private IHostApplicationLifetime HostApplicationLifetime { get; }
-	private IHttpContextAccessor HttpContextAccessor { get; }
-	private ILogger<RequestExceptionHandler> Logger { get; }
-
-	public RequestExceptionHandler(IHostApplicationLifetime hostApplicationLifetime, IHttpContextAccessor httpContextAccessor, ILogger<RequestExceptionHandler> logger)
-	{
-		this.HostApplicationLifetime = hostApplicationLifetime;
-		this.HttpContextAccessor = httpContextAccessor;
-		this.Logger = logger;
-	}
-
 	public async Task HandleExceptionAsync()
 	{
-		var exceptionHandlerFeature = this.HttpContextAccessor.HttpContext?.Features.Get<IExceptionHandlerFeature>();
+		var exceptionHandlerFeature = httpContextAccessor.HttpContext?.Features.Get<IExceptionHandlerFeature>();
 		var exception = exceptionHandlerFeature?.Error;
 
 		// Note:
@@ -34,23 +26,23 @@ public class RequestExceptionHandler
 		// We choose the former as the lesser evil
 
 		// Shutdown is an acceptable reason for cancellation
-		if ((exception as OperationCanceledException)?.CancellationToken == this.HostApplicationLifetime.ApplicationStopping)
-			this.Logger.LogInformation(exception, "Shutdown cancelled the request.");
+		if ((exception as OperationCanceledException)?.CancellationToken == hostApplicationLifetime.ApplicationStopping)
+			logger.LogInformation(exception, "Shutdown cancelled the request.");
 		// An aborted request is an acceptable reason for cancellation
-		else if ((exception is OperationCanceledException opCanceledException) && opCanceledException.CancellationToken == this.HttpContextAccessor.HttpContext?.RequestAborted)
-			this.Logger.LogInformation(exception, "The caller cancelled the request.");
+		else if ((exception is OperationCanceledException opCanceledException) && opCanceledException.CancellationToken == httpContextAccessor.HttpContext?.RequestAborted)
+			logger.LogInformation(exception, "The caller cancelled the request.");
 		else if (exception is ValidationException validationException)
 			await this.HandleValidationExceptionAsync(validationException);
 		else if (exception is not null)
-			this.Logger.LogError(exception, "The request handler has thrown an exception.");
+			logger.LogError(exception, "The request handler has thrown an exception.");
 	}
 
 	private async Task HandleValidationExceptionAsync(ValidationException exception)
 	{
-		this.Logger.LogInformation(exception, "The request was invalid: {Message}", exception.Message);
+		logger.LogInformation(exception, "The request was invalid: {Message}", exception.Message);
 
 		// Respond with the rejection if possible
-		var httpContext = this.HttpContextAccessor.HttpContext;
+		var httpContext = httpContextAccessor.HttpContext;
 		if (httpContext?.Response.HasStarted == false)
 		{
 			httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;

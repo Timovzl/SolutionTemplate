@@ -2,16 +2,21 @@
 
 	<PropertyGroup>
 		<!-- Any 3.1+ target provides nullable annotations -->
-		<TargetFrameworks>net7.0;netstandard2.0</TargetFrameworks>
+		<TargetFrameworks>net8.0;netstandard2.0</TargetFrameworks>
 		<AssemblyName>__ToDoAreaName__.__ToDoBoundedContextName__.Contracts</AssemblyName>
 		<RootNamespace>__ToDoAreaName__.__ToDoBoundedContextName__.Contracts</RootNamespace>
 		<Nullable>Enable</Nullable>
 		<ImplicitUsings>Enable</ImplicitUsings>
-		<LangVersion>11</LangVersion>
+		<LangVersion>12</LangVersion>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<Version>0.1.0</Version>
 	</PropertyGroup>
-	
+
+	<PropertyGroup>
+		<!-- IDE0290: Use primary constructor - constuctor summaries tend to be useful in contracts -->
+		<NoWarn>IDE0290</NoWarn>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<InternalsVisibleTo Include="__ToDoAreaName__.__ToDoBoundedContextName__.Application" />
 	</ItemGroup>

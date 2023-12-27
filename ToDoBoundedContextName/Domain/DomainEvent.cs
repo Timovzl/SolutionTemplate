@@ -20,15 +20,6 @@ public abstract class DomainEvent<TId> : ValueObject, IDomainEvent
 		if (!EqualityComparer<TId>.Default.Equals(id, default))
 			DomainObjectTracker.DidCreateOrphanedDomainObject(this);
 	}
-
-	#region Entity Framework Constructor
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-	[Obsolete("Reconstitution only.")]
-	protected DomainEvent()
-	{
-	}
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-	#endregion
 }
 
 public interface IDomainEvent : IDomainObject
