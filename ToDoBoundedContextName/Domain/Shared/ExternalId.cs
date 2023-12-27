@@ -5,8 +5,8 @@ namespace __ToDoAreaName__.__ToDoBoundedContextName__.Domain.Shared;
 /// An ID value originating outside of the bounded context.
 /// </para>
 /// </summary>
-[SourceGenerated]
-public sealed partial class ExternalId : WrapperValueObject<string>, IIdentity<string>, IComparable<ExternalId>
+[WrapperValueObject<string>]
+public sealed partial class ExternalId : IIdentity<string>, IComparable<ExternalId>
 {
 	protected override StringComparison StringComparison => StringComparison.Ordinal;
 
