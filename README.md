@@ -8,10 +8,10 @@ To create a new solution using the template, first clone or pull this repository
 
 ```PowerShell
 # Ensure that the template can be freshly installed by removing any prior version
-dotnet new -u .
+dotnet new uninstall .
 
 # Install the template
-dotnet new -i .
+dotnet new install .
 
 # Create a new solution using the template
 dotnet new CleanDdd -o ToDoTargetPathIncludingSolutionDir -n ToDoSolutionName -ar ToDoCompanyName.ToDoDepartmentName -e "TODO: A short summary of the Bounded Context, for the readme."
