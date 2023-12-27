@@ -3,6 +3,7 @@ using __ToDoAreaName__.__ToDoBoundedContextName__.Application.ExceptionHandlers;
 using __ToDoAreaName__.__ToDoBoundedContextName__.Infrastructure.Databases;
 using Microsoft.OpenApi.Models;
 using Prometheus;
+using Serilog;
 
 namespace __ToDoAreaName__.__ToDoBoundedContextName__.Api;
 
@@ -11,6 +12,8 @@ public static class Program
 	public static async Task Main(string[] args)
 	{
 		var builder = WebApplication.CreateBuilder(args);
+
+		builder.Host.UseSerilog((context, logger) => logger.ReadFrom.Configuration(context.Configuration));
 
 		builder.Services.AddApplicationLayer(builder.Configuration);
 		builder.Services.AddDatabaseInfrastructureLayer(builder.Configuration);

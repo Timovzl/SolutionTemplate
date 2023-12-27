@@ -5,6 +5,7 @@ using __ToDoAreaName__.__ToDoBoundedContextName__.JobRunner.Jobs;
 using Hangfire;
 using Hangfire.Prometheus.NetCore;
 using Prometheus;
+using Serilog;
 
 namespace __ToDoAreaName__.__ToDoBoundedContextName__.JobRunner;
 
@@ -13,6 +14,8 @@ public static class Program
 	public static async Task Main(string[] args)
 	{
 		var builder = WebApplication.CreateBuilder(args);
+
+		builder.Host.UseSerilog((context, logger) => logger.ReadFrom.Configuration(context.Configuration));
 
 		builder.Services.AddApplicationLayer(builder.Configuration);
 		builder.Services.AddDatabaseInfrastructureLayer(builder.Configuration);
