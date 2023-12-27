@@ -70,7 +70,7 @@ public sealed class CoreDbContext(
 
 		// We map things explicitly
 		configurationBuilder.Conventions.Remove<ConstructorBindingConvention>();
-		configurationBuilder.Conventions.Remove<RelationshipDiscoveryConvention<();
+		configurationBuilder.Conventions.Remove<RelationshipDiscoveryConvention>();
 		configurationBuilder.Conventions.Remove<PropertyDiscoveryConvention>();
 
 		configurationBuilder.Conventions.Add(services => ActivatorUtilities.CreateInstance<ConstructorBindingConvention>(services)); // Workaround for ComplexProperty() bug that requires ConstructorBindingConvention to be present (but it can fail if run before UninitializedInstantiationConvention): https://github.com/dotnet/efcore/issues/32437
