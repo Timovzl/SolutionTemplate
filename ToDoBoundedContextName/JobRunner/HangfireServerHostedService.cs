@@ -15,8 +15,6 @@ internal sealed class HangfireServerHostedService(
 {
 	private static readonly RecurringJobOptions JobOptions = new RecurringJobOptions() { TimeZone = TimeZoneInfo.Local };
 
-	private IReadOnlyCollection<IJob> Jobs { get; } = jobs.ToList();
-
 	public Task StartAsync(CancellationToken cancellationToken)
 	{
 		try
@@ -26,6 +24,7 @@ internal sealed class HangfireServerHostedService(
 				// Hangfire injects a cancellation token that honors job termination and application shutdown
 				// If application shutdown terminates jobs, Hangfire re-runs them as soon as possible
 				RecurringJob.AddOrUpdate(
+					recurringJobId: job.GetType().Name,
 					() => job.Execute(default),
 					job.CronSchedule,
 					JobOptions);
