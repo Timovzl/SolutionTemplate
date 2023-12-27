@@ -33,7 +33,7 @@ public static class Program
 		builder.Services.AddHealthChecks();
 
 		var app = builder.Build();
-		
+
 		if (builder.Environment.IsDevelopment())
 			app.UseDeveloperExceptionPage();
 

@@ -11,9 +11,7 @@ internal sealed class HangfireJobLogEnricherAttribute(
 	ILogger<HangfireJobLogEnricherAttribute> logger)
 	: JobFilterAttribute, IServerFilter
 {
-	private static readonly ConditionalWeakTable<string, IDisposable> LogScopes = new ConditionalWeakTable<string, IDisposable>();
-
-	private ILogger<HangfireJobLogEnricherAttribute> Logger { get; } = logger;
+	private static readonly ConditionalWeakTable<string, IDisposable> LogScopes = [];
 
 	public void OnPerforming(PerformingContext filterContext)
 	{
