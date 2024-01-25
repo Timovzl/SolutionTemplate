@@ -2,7 +2,7 @@
   <ItemGroup>
     <PackageVersion Include="Architect.DomainModeling" Version="3.0.1" />
     <PackageVersion Include="Architect.EntityFramework.DbContextManagement" Version="2.0.0" />
-    <PackageVersion Include="Architect.Identities" Version="2.0.0" />
+    <PackageVersion Include="Architect.Identities" Version="2.1.0" />
     <PackageVersion Include="coverlet.collector" Version="6.0.0" />
     <PackageVersion Include="Hangfire" Version="1.8.6" />
     <PackageVersion Include="Hangfire.AspNetCore" Version="1.8.6" />

@@ -20,7 +20,7 @@ using Moq;
 
 namespace __ToDoAreaName__.__ToDoBoundedContextName__.Application.IntegrationTests;
 
-public abstract class IntegrationTestBase : IDisposable
+public abstract class IntegrationTestBase : IAsyncLifetime, IDisposable
 {
 	/// <summary>
 	/// The current time zone's offset from UTC during January. Useful for replacements in JSON strings to make assertions on.
@@ -43,7 +43,7 @@ public abstract class IntegrationTestBase : IDisposable
 	/// </summary>
 	protected static readonly DateOnly FixedDate = DateOnly.FromDateTime(FixedTime);
 
-	protected string UniqueTestName { get; } = $"Test_{Guid.NewGuid():N}";
+	protected string UniqueTestName { get; } = $"Test_{DistributedId128.CreateGuid().ToAlphanumeric()}";
 
 	protected IHostBuilder HostBuilder { get; set; }
 
@@ -136,21 +136,31 @@ public abstract class IntegrationTestBase : IDisposable
 		});
 	}
 
+	public Task InitializeAsync()
+	{
+		return Task.CompletedTask;
+	}
+
+	public async Task DisposeAsync()
+	{
+		if (this._host is not null)
+		{
+			try
+			{
+				await this._host.StopAsync();
+			}
+			finally
+			{
+				await this.DeleteDatabaseAsync();
+			}
+		}
+	}
+
 	public virtual void Dispose()
 	{
 		GC.SuppressFinalize(this);
 
-		try
-		{
-			this._host?.StopAsync().GetAwaiter().GetResult();
-		}
-		finally
-		{
-			this._host?.Dispose();
-
-			if (this._host is not null)
-				this.DeleteDatabase();
-		}
+		this._host?.Dispose();
 	}
 
 	/// <summary>
@@ -330,7 +340,7 @@ public abstract class IntegrationTestBase : IDisposable
 	/// (Working alternative: https://stackoverflow.com/a/7469167/543814.)
 	/// </para>
 	/// </summary>
-	private void DeleteDatabase()
+	private async Task DeleteDatabaseAsync()
 	{
 		// To create or delete the database, we must connect without specifying it in the connection string
 		var connectionString = Regex.Replace(this.ConnectionString, "Initial Catalog=[^;]+", "");
@@ -340,7 +350,7 @@ public abstract class IntegrationTestBase : IDisposable
 
 		command.CommandText = $"DROP DATABASE IF EXISTS {this.UniqueTestName};";
 
-		connection.Open();
-		command.ExecuteNonQuery();
+		await connection.OpenAsync();
+		await command.ExecuteNonQueryAsync();
 	}
 }
