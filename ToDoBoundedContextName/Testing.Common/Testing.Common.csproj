@@ -1,6 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
+		<IsPackable>False</IsPackable>
+	</PropertyGroup>
+
+	<PropertyGroup>
 		<AssemblyName>__ToDoAreaName__.__ToDoBoundedContextName__.Testing.Common</AssemblyName>
 		<RootNamespace>__ToDoAreaName__.__ToDoBoundedContextName__.Testing.Common</RootNamespace>
 	</PropertyGroup>
