@@ -5,11 +5,6 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<AssemblyName>__ToDoAreaName__.__ToDoBoundedContextName__.Testing.Common</AssemblyName>
-		<RootNamespace>__ToDoAreaName__.__ToDoBoundedContextName__.Testing.Common</RootNamespace>
-	</PropertyGroup>
-
-	<PropertyGroup>
 		<!-- SYSLIB1045: Use 'GeneratedRegexAttribute' - not necessary for tests -->
 		<NoWarn>SYSLIB1045</NoWarn>
 	</PropertyGroup>

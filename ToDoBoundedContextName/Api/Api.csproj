@@ -1,8 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
-		<AssemblyName>__ToDoAreaName__.__ToDoBoundedContextName__.Api</AssemblyName>
-		<RootNamespace>__ToDoAreaName__.__ToDoBoundedContextName__.Api</RootNamespace>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>
 

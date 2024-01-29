@@ -1,8 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<AssemblyName>__ToDoAreaName__.__ToDoBoundedContextName__.Application.IntegrationTests</AssemblyName>
-		<RootNamespace>__ToDoAreaName__.__ToDoBoundedContextName__.Application.IntegrationTests</RootNamespace>
 		<IsPackable>False</IsPackable>
 	</PropertyGroup>
 

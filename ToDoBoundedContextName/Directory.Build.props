@@ -1,10 +1,13 @@
 <Project>
 
 	<PropertyGroup>
+		<AssemblyName>__ToDoAreaName__.__ToDoBoundedContextName__.$(MSBuildProjectName)</AssemblyName>
+		<RootNamespace>__ToDoAreaName__.__ToDoBoundedContextName__.$(MSBuildProjectName)</RootNamespace>
 		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>Enable</Nullable>
 		<ImplicitUsings>Enable</ImplicitUsings>
 		<ManagePackageVersionsCentrally>True</ManagePackageVersionsCentrally>
+		<NuGetAudit>True</NuGetAudit>
 	</PropertyGroup>
 
 </Project>

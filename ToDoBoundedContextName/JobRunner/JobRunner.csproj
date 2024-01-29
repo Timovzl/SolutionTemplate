@@ -1,10 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-	<PropertyGroup>
-		<AssemblyName>__ToDoAreaName__.__ToDoBoundedContextName__.JobRunner</AssemblyName>
-		<RootNamespace>__ToDoAreaName__.__ToDoBoundedContextName__.JobRunner</RootNamespace>
-	</PropertyGroup>
-
 	<ItemGroup>
 		<PackageReference Include="Hangfire" />
 		<PackageReference Include="Hangfire.AspNetCore" />

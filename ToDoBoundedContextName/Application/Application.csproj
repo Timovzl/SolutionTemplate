@@ -1,10 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<AssemblyName>__ToDoAreaName__.__ToDoBoundedContextName__.Application</AssemblyName>
-		<RootNamespace>__ToDoAreaName__.__ToDoBoundedContextName__.Application</RootNamespace>
-	</PropertyGroup>
-	
 	<ItemGroup>
 		<InternalsVisibleTo Include="$(AssemblyName).UnitTests" />
 		<InternalsVisibleTo Include="$(AssemblyName).IntegrationTests" />
