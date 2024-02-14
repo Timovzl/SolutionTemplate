@@ -55,7 +55,7 @@ public static class Program
 		if (builder.Environment.IsDevelopment())
 			app.UseDeveloperExceptionPage();
 
-        app.UseExceptionHandler();
+        app.UseExceptionHandler("/Error");
 
 		app.UseRouting();
 
