@@ -27,14 +27,14 @@ public sealed class RequestExceptionHandler(
 
 		// Shutdown is an acceptable reason for cancellation
 		if ((exception as OperationCanceledException)?.CancellationToken == hostApplicationLifetime.ApplicationStopping)
-			logger.LogInformation(exception, "Shutdown cancelled the request.");
+			logger.LogInformation(exception, "Shutdown cancelled the request");
 		// An aborted request is an acceptable reason for cancellation
 		else if ((exception is OperationCanceledException opCanceledException) && opCanceledException.CancellationToken == httpContextAccessor.HttpContext?.RequestAborted)
-			logger.LogInformation(exception, "The caller cancelled the request.");
+			logger.LogInformation(exception, "The caller cancelled the request");
 		else if (exception is ValidationException validationException)
 			await this.HandleValidationExceptionAsync(validationException);
 		else if (exception is not null)
-			logger.LogError(exception, "The request handler has thrown an exception.");
+			logger.LogError(exception, "The request handler has thrown an exception");
 	}
 
 	private async Task HandleValidationExceptionAsync(ValidationException exception)
