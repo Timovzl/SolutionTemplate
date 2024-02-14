@@ -48,13 +48,14 @@ public static class Program
 
 		builder.Services.AddHealthChecks();
 
+		services.AddExceptionHandler<RequestExceptionHandler>();
+
 		var app = builder.Build();
 		
 		if (builder.Environment.IsDevelopment())
 			app.UseDeveloperExceptionPage();
 
-		app.UseExceptionHandler(app => app.Run(async context =>
-			await context.RequestServices.GetRequiredService<RequestExceptionHandler>().HandleExceptionAsync()));
+        app.UseExceptionHandler();
 
 		app.UseRouting();
 
