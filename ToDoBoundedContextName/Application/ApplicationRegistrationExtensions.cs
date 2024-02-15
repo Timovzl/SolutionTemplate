@@ -23,8 +23,6 @@ public static class ApplicationRegistrationExtensions
 			.AddClasses(c => c.Where(type => type.Name.EndsWith("er") || type.Name.EndsWith("or") || type.Name.EndsWith("UseCase") || type.Name.EndsWith("Client")), publicOnly: false) // Services only
 			.AsSelfWithInterfaces().WithSingletonLifetime());
 		
-		services.AddHttpContextAccessor();
-
 		return services;
 	}
 

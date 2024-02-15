@@ -7,10 +7,10 @@ namespace __ToDoAreaName__.__ToDoBoundedContextName__.Application.ExceptionHandl
 
 /// <summary>
 /// A global handler for uncaught exceptions during request handling.
+/// Treats validation errors as user error (4xx) and other errors as developer error (5xx).
 /// </summary>
 public sealed class RequestExceptionHandler(
 	IHostApplicationLifetime hostApplicationLifetime,
-	IHttpContextAccessor httpContextAccessor,
 	ILogger<RequestExceptionHandler> logger)
 	: IExceptionHandler
 {
@@ -26,7 +26,7 @@ public sealed class RequestExceptionHandler(
 		if ((exception as OperationCanceledException)?.CancellationToken == hostApplicationLifetime.ApplicationStopping)
 			logger.LogInformation(exception, "Shutdown cancelled the request");
 		// An aborted request is an acceptable reason for cancellation
-		else if ((exception is OperationCanceledException opCanceledException) && opCanceledException.CancellationToken == httpContextAccessor.HttpContext?.RequestAborted)
+		else if ((exception is OperationCanceledException opCanceledException) && opCanceledException.CancellationToken == httpContext.RequestAborted)
 			logger.LogInformation(exception, "The caller cancelled the request");
 		else if (exception is ValidationException validationException)
 			await HandleValidationExceptionAsync(validationException, httpContext, cancellationToken);
