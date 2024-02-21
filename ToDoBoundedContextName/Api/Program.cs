@@ -66,8 +66,15 @@ public static class Program
 		app.UseMetricServer();
 		app.UseHttpMetrics();
 
-		app.UseSwagger();
-		app.UseSwaggerUI();
+		app.UseSwagger(swagger =>
+		{
+			swagger.RouteTemplate = "api/{DocumentName}/swagger.json";
+		});
+		app.UseSwaggerUI(swagger =>
+		{
+			swagger.RoutePrefix = "api";
+			swagger.SwaggerEndpoint("V1/swagger.json", "__ToDoBoundedContextName__ API");
+		});
 
 		app.UseApplicationControllers();
 
