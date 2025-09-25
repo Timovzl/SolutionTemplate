@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace __ToDoAreaName__.__ToDoBoundedContextName__.Infrastructure.Databases.Shared.Converters;
 

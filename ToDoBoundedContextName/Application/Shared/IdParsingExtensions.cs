@@ -1,4 +1,4 @@
-namespace __ToDoAreaName__.__ToDoBoundedContextName__.Application.Shared;
+﻿namespace __ToDoAreaName__.__ToDoBoundedContextName__.Application.Shared;
 
 public static class IdParsingExtensions
 {

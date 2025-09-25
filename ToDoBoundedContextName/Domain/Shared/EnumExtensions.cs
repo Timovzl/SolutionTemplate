@@ -1,4 +1,4 @@
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 
 namespace __ToDoAreaName__.__ToDoBoundedContextName__.Domain.Shared;
 

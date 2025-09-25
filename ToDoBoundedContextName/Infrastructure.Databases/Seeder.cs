@@ -1,4 +1,4 @@
-namespace __ToDoAreaName__.__ToDoBoundedContextName__.Infrastructure.Databases;
+﻿namespace __ToDoAreaName__.__ToDoBoundedContextName__.Infrastructure.Databases;
 
 /// <summary>
 /// Seeds the database with initial data.

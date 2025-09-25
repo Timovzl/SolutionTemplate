@@ -1,4 +1,4 @@
-<Project>
+﻿<Project>
   <ItemGroup>
     <PackageVersion Include="Architect.DomainModeling" Version="3.0.1" />
     <PackageVersion Include="Architect.EntityFramework.DbContextManagement" Version="2.0.0" />

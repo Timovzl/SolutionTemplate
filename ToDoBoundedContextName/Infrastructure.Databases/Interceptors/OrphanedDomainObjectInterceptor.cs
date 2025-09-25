@@ -1,4 +1,4 @@
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using Architect.DomainModeling;
 using Microsoft.EntityFrameworkCore.Diagnostics;

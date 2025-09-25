@@ -1,4 +1,4 @@
-using Prometheus;
+﻿using Prometheus;
 using Serilog;
 using Serilog.Configuration;
 using Serilog.Core;

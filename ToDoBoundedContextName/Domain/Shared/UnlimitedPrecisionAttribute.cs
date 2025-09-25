@@ -1,4 +1,4 @@
-namespace __ToDoAreaName__.__ToDoBoundedContextName__.Domain.Shared;
+﻿namespace __ToDoAreaName__.__ToDoBoundedContextName__.Domain.Shared;
 
 /// <summary>
 /// <para>

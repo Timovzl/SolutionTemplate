@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore.Design;
+﻿using Microsoft.EntityFrameworkCore.Design;
 
 namespace __ToDoAreaName__.__ToDoBoundedContextName__.Infrastructure.Databases.Shared;
 

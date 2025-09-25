@@ -1,4 +1,4 @@
-namespace __ToDoAreaName__.__ToDoBoundedContextName__.Domain;
+﻿namespace __ToDoAreaName__.__ToDoBoundedContextName__.Domain;
 
 /// <summary>
 /// Tracks the creation of certain interesting <see cref="IDomainObject"/>s.

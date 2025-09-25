@@ -1,4 +1,4 @@
-namespace __ToDoAreaName__.__ToDoBoundedContextName__.Domain;
+﻿namespace __ToDoAreaName__.__ToDoBoundedContextName__.Domain;
 
 /// <summary>
 /// Abstract base type for a domain event, i.e. a relevant thing that has happened within the domain model.

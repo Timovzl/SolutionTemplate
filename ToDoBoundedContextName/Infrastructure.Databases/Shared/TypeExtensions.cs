@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace __ToDoAreaName__.__ToDoBoundedContextName__.Infrastructure.Databases.Shared;
 

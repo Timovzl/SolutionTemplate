@@ -1,4 +1,4 @@
-using Moq;
+﻿using Moq;
 
 namespace __ToDoAreaName__.__ToDoBoundedContextName__.Domain.UnitTests;
 

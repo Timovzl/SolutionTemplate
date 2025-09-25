@@ -1,4 +1,4 @@
-using Hangfire.Dashboard;
+﻿using Hangfire.Dashboard;
 
 namespace __ToDoAreaName__.__ToDoBoundedContextName__.JobRunner.Filters;
 

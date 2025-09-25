@@ -1,4 +1,4 @@
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace __ToDoAreaName__.__ToDoBoundedContextName__.Domain.Validation;
 

@@ -1,4 +1,4 @@
-namespace __ToDoAreaName__.__ToDoBoundedContextName__.Application;
+﻿namespace __ToDoAreaName__.__ToDoBoundedContextName__.Application;
 
 /// <summary>
 /// <para>

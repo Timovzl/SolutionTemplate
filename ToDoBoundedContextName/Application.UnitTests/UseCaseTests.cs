@@ -1,4 +1,4 @@
-namespace __ToDoAreaName__.__ToDoBoundedContextName__.Application.UnitTests;
+﻿namespace __ToDoAreaName__.__ToDoBoundedContextName__.Application.UnitTests;
 
 public class UseCaseTests
 {

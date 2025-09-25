@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<!-- IDE0290: Use primary constructor - domain objects tend to have complex ctor logic, and we want to be consistent even when ctors are simple -->

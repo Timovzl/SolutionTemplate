@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using __ToDoAreaName__.__ToDoBoundedContextName__.Application;
 using __ToDoAreaName__.__ToDoBoundedContextName__.Domain;
 using __ToDoAreaName__.__ToDoBoundedContextName__.Domain.Shared;

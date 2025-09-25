@@ -1,4 +1,4 @@
-using __ToDoAreaName__.__ToDoBoundedContextName__.Application.Shared;
+﻿using __ToDoAreaName__.__ToDoBoundedContextName__.Application.Shared;
 
 namespace __ToDoAreaName__.__ToDoBoundedContextName__.Api.Mocks;
 

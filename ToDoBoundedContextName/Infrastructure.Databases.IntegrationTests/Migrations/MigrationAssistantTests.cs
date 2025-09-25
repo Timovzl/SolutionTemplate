@@ -1,4 +1,4 @@
-namespace __ToDoAreaName__.__ToDoBoundedContextName__.Infrastructure.Databases.IntegrationTests.Migrations;
+﻿namespace __ToDoAreaName__.__ToDoBoundedContextName__.Infrastructure.Databases.IntegrationTests.Migrations;
 
 public class MigrationAssistantTests : IntegrationTestBase
 {

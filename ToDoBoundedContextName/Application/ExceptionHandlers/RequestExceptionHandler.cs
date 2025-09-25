@@ -1,4 +1,4 @@
-using System.Net;
+﻿using System.Net;
 using System.Text;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Extensions.Hosting;

@@ -1,4 +1,4 @@
-using Hangfire.Common;
+﻿using Hangfire.Common;
 using Hangfire.Server;
 using System.Runtime.CompilerServices;
 

@@ -1,4 +1,4 @@
-using System.Data;
+﻿using System.Data;
 using System.Text.RegularExpressions;
 using Architect.EntityFramework.DbContextManagement;
 using Microsoft.Data.SqlClient;

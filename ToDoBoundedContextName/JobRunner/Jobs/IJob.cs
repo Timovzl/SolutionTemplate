@@ -1,4 +1,4 @@
-using Hangfire;
+﻿using Hangfire;
 
 namespace __ToDoAreaName__.__ToDoBoundedContextName__.JobRunner.Jobs;
 

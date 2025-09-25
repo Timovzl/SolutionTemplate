@@ -1,4 +1,4 @@
-#nullable disable // Disable nullable, to avoid giving the package consumer's compiler any indication of null vs. non-null, which are unclear with optionals
+﻿#nullable disable // Disable nullable, to avoid giving the package consumer's compiler any indication of null vs. non-null, which are unclear with optionals
 
 namespace __ToDoAreaName__.__ToDoBoundedContextName__.Contracts;
 

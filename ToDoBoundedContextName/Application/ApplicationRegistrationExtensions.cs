@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text.Json.Serialization;
 using __ToDoAreaName__.__ToDoBoundedContextName__.Domain;
 using Microsoft.AspNetCore.Builder;

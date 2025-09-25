@@ -1,4 +1,4 @@
-using Architect.AmbientContexts;
+﻿using Architect.AmbientContexts;
 
 namespace __ToDoAreaName__.__ToDoBoundedContextName__.Application.Shared;
 

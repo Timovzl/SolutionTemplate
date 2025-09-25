@@ -1,4 +1,4 @@
-using __ToDoAreaName__.__ToDoBoundedContextName__.Application;
+﻿using __ToDoAreaName__.__ToDoBoundedContextName__.Application;
 using __ToDoAreaName__.__ToDoBoundedContextName__.Infrastructure.Databases;
 using __ToDoAreaName__.__ToDoBoundedContextName__.JobRunner.Filters;
 using __ToDoAreaName__.__ToDoBoundedContextName__.JobRunner.Jobs;
