@@ -12,7 +12,7 @@ namespace __ToDoAreaName__.__ToDoBoundedContextName__.Infrastructure.Databases.I
 /// </summary>
 internal sealed class OrphanedDomainObjectInterceptor : ISaveChangesInterceptor
 {
-	private static ConditionalWeakTable<DbContext, ConcurrentQueue<IDomainObject>> UnsavedDomainObjectsPerDbContext { get; } = new ConditionalWeakTable<DbContext, ConcurrentQueue<IDomainObject>>();
+	private static ConditionalWeakTable<DbContext, ConcurrentQueue<IDomainObject>> UnsavedDomainObjectsPerDbContext { get; } = [];
 
 	private bool IsEnabled { get; set; } = true;
 

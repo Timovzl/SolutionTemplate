@@ -3,7 +3,8 @@
 /// <summary>
 /// Abstract base class for a repository.
 /// </summary>
-public abstract class Repository<TEntity>
+public abstract class Repository<TEntity>(
+	IDbContextAccessor<CoreDbContext> dbContextAccessor)
 	where TEntity : class
 {
 	/// <summary>
@@ -21,10 +22,5 @@ public abstract class Repository<TEntity>
 	/// </summary>
 	protected CoreDbContext DbContext => this.DbContextAccessor.CurrentDbContext;
 
-	private IDbContextAccessor<CoreDbContext> DbContextAccessor { get; }
-
-	protected Repository(IDbContextAccessor<CoreDbContext> dbContextAccessor)
-	{
-		this.DbContextAccessor = dbContextAccessor;
-	}
+	private IDbContextAccessor<CoreDbContext> DbContextAccessor { get; } = dbContextAccessor;
 }
