@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Text;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 
 namespace __ToDoAreaName__.__ToDoBoundedContextName__.Application.ExceptionHandlers;
@@ -29,7 +30,7 @@ public sealed class RequestExceptionHandler(
 		else if ((exception is OperationCanceledException opCanceledException) && opCanceledException.CancellationToken == httpContext.RequestAborted)
 			logger.LogInformation(exception, "The caller cancelled the request");
 		else if (exception is ValidationException validationException)
-			await HandleValidationExceptionAsync(validationException, httpContext, cancellationToken);
+			await this.HandleValidationExceptionAsync(validationException, httpContext, cancellationToken);
 		else if (exception is not null)
 			logger.LogError(exception, "The request handler has thrown an exception");
 

@@ -23,7 +23,6 @@ public static class HangfireRegistrationExtensions
 				SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
 				UseRecommendedIsolationLevel = true,
 				DisableGlobalLocks = true,
-				UsePageLocksOnDequeue = true, // See https://newreleases.io/project/github/HangfireIO/Hangfire/release/v1.7.0-beta2
 				QueuePollInterval = TimeSpan.FromSeconds(10),
 			});
 	}

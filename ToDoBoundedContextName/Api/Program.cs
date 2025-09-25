@@ -48,7 +48,7 @@ public static class Program
 
 		builder.Services.AddHealthChecks();
 
-		services.AddExceptionHandler<RequestExceptionHandler>();
+		builder.Services.AddExceptionHandler<RequestExceptionHandler>();
 
 		var app = builder.Build();
 		

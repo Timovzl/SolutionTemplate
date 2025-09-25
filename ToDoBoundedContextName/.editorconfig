@@ -19,6 +19,12 @@ tab_width = 4
 [**.{json,xml}]
 charset = utf-8
 
+# For consistency with Visual Studio
+[Directory.Packages.props]
+indent_size = 2
+indent_style = space
+insert_final_newline = false
+
 # C# files
 [**.cs]
 

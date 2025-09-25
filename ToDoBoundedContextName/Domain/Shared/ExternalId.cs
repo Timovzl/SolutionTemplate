@@ -12,7 +12,7 @@ public sealed partial class ExternalId : IIdentity<string>, IComparable<External
 
 	public const ushort MaxLength = 50;
 
-	public string Value { get; }
+	public string Value { get; private init; }
 
 	public ExternalId(string value)
 	{
