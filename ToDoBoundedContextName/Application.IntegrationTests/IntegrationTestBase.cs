@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using Architect.EntityFramework.DbContextManagement;
+using __ToDoAreaName__.__ToDoBoundedContextName__.Api.Mocks;
 using __ToDoAreaName__.__ToDoBoundedContextName__.Application.Shared;
 using __ToDoAreaName__.__ToDoBoundedContextName__.Infrastructure.Databases;
 using __ToDoAreaName__.__ToDoBoundedContextName__.Infrastructure.Databases.Interceptors;
@@ -16,7 +17,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Moq;
 
 namespace __ToDoAreaName__.__ToDoBoundedContextName__.Application.IntegrationTests;
 
@@ -103,7 +103,7 @@ public abstract class IntegrationTestBase : IAsyncDisposable
 		this.ConfigureServices(services => services.AddApplicationLayer(this.Configuration));
 		this.ConfigureServices(services => services.AddDatabaseInfrastructureLayer(this.Configuration));
 
-		this.ConfigureServices(services => services.AddSingleton(new Mock<IJobEnqueuer>().Object));
+		this.ConfigureServices(services => services.AddSingleton<IJobEnqueuer, MockJobEnqueuer>());
 
 		// Remove custom hosted services, to avoid running startup/background logic
 		this.ConfigureServices(services =>

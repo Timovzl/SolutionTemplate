@@ -10,7 +10,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Moq" />
+		<PackageReference Include="TUnit" />
 	</ItemGroup>
 
 	<ItemGroup>
