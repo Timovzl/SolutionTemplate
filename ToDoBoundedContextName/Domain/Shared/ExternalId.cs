@@ -6,9 +6,9 @@
 /// </para>
 /// </summary>
 [WrapperValueObject<string>]
-public sealed partial class ExternalId : IIdentity<string>, IComparable<ExternalId>
+public readonly partial record struct ExternalId : IIdentity<string>, IComparable<ExternalId>
 {
-	protected override StringComparison StringComparison => StringComparison.Ordinal;
+	private StringComparison StringComparison => StringComparison.Ordinal;
 
 	public const ushort MaxLength = 50;
 
@@ -22,7 +22,7 @@ public sealed partial class ExternalId : IIdentity<string>, IComparable<External
 			throw new ValidationException("ExternalId_ValueEmpty", "An external ID value must not be empty.");
 		if (this.Value.Length > MaxLength)
 			throw new ValidationException("ExternalId_ValueToolong", $"An external ID value must not be over {MaxLength} characters long.");
-		if (ContainsNonAsciiOrNonPrintableOrWhitespaceCharacters(this.Value) || this.Value.AsSpan().IndexOfAny('\'', '"') >= 0)
+		if (ValueObjectStringValidator.ContainsNonAsciiOrNonPrintableOrWhitespaceCharacters(this.Value) || this.Value.AsSpan().IndexOfAny('\'', '"') >= 0)
 			throw new ValidationException("ExternalId_ValueInvalid", "An external ID value must consist of printable, non-whitespace, non-quote ASCII characters.");
 	}
 }
