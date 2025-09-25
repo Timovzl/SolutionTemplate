@@ -1,8 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+﻿using Architect.DomainModeling.Configuration;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.Extensions.DependencyInjection;
 using __ToDoAreaName__.__ToDoBoundedContextName__.Application;
-using __ToDoAreaName__.__ToDoBoundedContextName__.Domain;
-using __ToDoAreaName__.__ToDoBoundedContextName__.Domain.Shared;
 
 namespace __ToDoAreaName__.__ToDoBoundedContextName__.Infrastructure.Databases;
 
@@ -82,8 +81,8 @@ public sealed class CoreDbContext(
 
 		configurationBuilder.ConfigureDomainModelConventions(domainModel =>
 		{
-			domainModel.ConfigureIdentityConventions();
-			domainModel.ConfigureWrapperValueObjectConventions();
+			domainModel.ConfigureIdentityConventions(new IdentityConfigurationOptions() { CaseSensitiveCollation = BinaryCollation, IgnoreCaseCollation = CulturalCollation, });
+			domainModel.ConfigureWrapperValueObjectConventions(new WrapperValueObjectConfigurationOptions() { CaseSensitiveCollation = BinaryCollation, IgnoreCaseCollation = CulturalCollation, });
 			domainModel.ConfigureEntityConventions();
 			domainModel.ConfigureDomainEventConventions();
 		});
