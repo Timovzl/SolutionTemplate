@@ -20,7 +20,7 @@ using Moq;
 
 namespace __ToDoAreaName__.__ToDoBoundedContextName__.Application.IntegrationTests;
 
-public abstract class IntegrationTestBase : IAsyncLifetime, IDisposable
+public abstract class IntegrationTestBase : IAsyncDisposable
 {
 	/// <summary>
 	/// The current time zone's offset from UTC during January. Useful for replacements in JSON strings to make assertions on.
@@ -141,8 +141,10 @@ public abstract class IntegrationTestBase : IAsyncLifetime, IDisposable
 		return Task.CompletedTask;
 	}
 
-	public async Task DisposeAsync()
+	public async ValueTask DisposeAsync()
 	{
+		GC.SuppressFinalize(this);
+
 		if (this._host is not null)
 		{
 			try
@@ -154,13 +156,6 @@ public abstract class IntegrationTestBase : IAsyncLifetime, IDisposable
 				await this.DeleteDatabaseAsync();
 			}
 		}
-	}
-
-	public virtual void Dispose()
-	{
-		GC.SuppressFinalize(this);
-
-		this._host?.Dispose();
 	}
 
 	/// <summary>

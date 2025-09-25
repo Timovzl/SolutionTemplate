@@ -2,7 +2,7 @@
 
 public class MigrationAssistantTests : IntegrationTestBase
 {
-	[Fact]
+	[Test]
 	public async Task MigrateAsync_Regularly_ShouldHaveExpectedEffect()
 	{
 		this.ShouldCreateDatabase = false;
@@ -11,6 +11,6 @@ public class MigrationAssistantTests : IntegrationTestBase
 
 		await instance.MigrateAsync(CancellationToken.None);
 
-		Assert.NotEqual(0, Convert.ToInt32(await this.ExecuteScalar("SELECT COUNT(*) FROM __EFMigrationsHistory;")));
+		await Assert.That(Convert.ToInt32(await this.ExecuteScalar("SELECT COUNT(*) FROM __EFMigrationsHistory;"))).IsNotEqualTo(0);
 	}
 }
