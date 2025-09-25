@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Text.Json.Serialization;
 using __ToDoAreaName__.__ToDoBoundedContextName__.Domain;
+using __ToDoAreaName__.__ToDoBoundedContextName__.Application.ExceptionHandlers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -22,7 +23,9 @@ public static class ApplicationRegistrationExtensions
 		services.Scan(scanner => scanner.FromAssemblies(typeof(ApplicationRegistrationExtensions).Assembly)
 			.AddClasses(c => c.Where(type => type.Name.EndsWith("er") || type.Name.EndsWith("or") || type.Name.EndsWith("UseCase") || type.Name.EndsWith("Client")), publicOnly: false) // Services only
 			.AsSelfWithInterfaces().WithSingletonLifetime());
-		
+
+		services.AddScoped<CancellationReasonMiddleware>();
+
 		return services;
 	}
 
