@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Net;
+using System.Runtime.Serialization;
 
 namespace __ToDoAreaName__.__ToDoBoundedContextName__.Domain.Validation;
 
@@ -18,49 +19,36 @@ public class ValidationException : Exception
 	// Message is inherited
 
 	/// <summary>
+	/// A rough categorization of the issue, expressed as an <see cref="HttpStatusCode"/> for its ubiquity.
+	/// </summary>
+	public HttpStatusCode StatusCode { get; }
+
+	/// <summary>
 	/// The string representation of the error code.
 	/// </summary>
 	public string ErrorCode { get; }
 
 	/// <summary>
-	/// The body of the message, not prefixed by the error code.
+	/// The body of the message, <em>not</em> prefixed by the error code.
 	/// </summary>
 	public string MessageBody { get; }
 
-	/// <summary>
-	/// Constructs a new instance with the given code.
-	/// The string representation forms the body of the message.
-	/// </summary>
-	public ValidationException(Enum errorCode)
-		: this(errorCode.ToString())
-	{
-		this.MessageBody = errorCode.ToString();
-	}
-
-	/// <summary>
-	/// Constructs a new instance with the given code and base message.
-	/// </summary>
-	public ValidationException(Enum errorCode, string message)
-		: this(errorCode.ToString(), message)
+	/// <param name="errorCode">A stable error code for use throughout outer layers and/or systems.</param>
+	/// <param name="message">A human-readable message to help solve the issue.</param>
+	public ValidationException(string errorCode, string message, Exception? innerException = null)
+		: this(HttpStatusCode.BadRequest, errorCode, message, innerException)
 	{
 	}
 
-	/// <summary>
-	/// Constructs a new instance with the given code, base message, and inner exception.
-	/// </summary>
-	public ValidationException(Enum errorCode, string message, Exception innerException)
-		: this(errorCode.ToString(), message, innerException)
+	/// <param name="statusCode">A rough categorization of the issue, expressed as an <see cref="HttpStatusCode"/> for its ubiquity.</param>
+	/// <param name="errorCode">A stable error code for use throughout outer layers and/or systems.</param>
+	/// <param name="message">A human-readable message to help solve the issue.</param>
+	public ValidationException(HttpStatusCode statusCode, string errorCode, string message, Exception? innerException = null)
+		: base(GetMessage(errorCode ?? throw new ArgumentNullException(nameof(errorCode)), message), innerException)
 	{
-	}
-
-	/// <summary>
-	/// Core constructor.
-	/// </summary>
-	private ValidationException(string errorCode, string? messageBody = null, Exception? innerException = null)
-		: base(GetMessage(errorCode ?? throw new ArgumentNullException(nameof(errorCode)), messageBody), innerException)
-	{
+		this.StatusCode = statusCode;
 		this.ErrorCode = errorCode;
-		this.MessageBody = messageBody ?? this.ErrorCode;
+		this.MessageBody = message ?? errorCode;
 	}
 
 	private static string GetMessage(string errorCode, string? messageBody = null)
@@ -76,6 +64,7 @@ public class ValidationException : Exception
 	protected ValidationException(SerializationInfo info, StreamingContext context)
 		: base(info, context)
 	{
+		this.StatusCode = (HttpStatusCode)info.GetInt32("StatusCode");
 		this.ErrorCode = info.GetString("ErrorCode") ?? throw new IOException("Failed to deserialize: ErrorCode is missing.");
 		this.MessageBody = info.GetString("MessageBody") ?? this.ErrorCode;
 	}
@@ -85,6 +74,7 @@ public class ValidationException : Exception
 	{
 		base.GetObjectData(info, context);
 
+		info.AddValue("StatusCode", (int)this.StatusCode);
 		info.AddValue("ErrorCode", this.ErrorCode);
 		info.AddValue("MessageBody", this.MessageBody);
 	}
