@@ -87,8 +87,8 @@ public abstract class IntegrationTestBase : IAsyncDisposable
 				.UseTestServer(options => options.PreserveExecutionContext = true));
 
 		this.Configuration = new ConfigurationBuilder()
-			.AddJsonFile("appsettings.json")
-			.AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT")}.json", optional: true)
+			.AddJsonFile("appsettings.Testing.json")
+			.AddJsonFile($"appsettings.Testing.{Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT")}.json", optional: true)
 			.AddEnvironmentVariables()
 			.Build();
 
