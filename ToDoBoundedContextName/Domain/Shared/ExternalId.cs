@@ -1,4 +1,6 @@
-﻿namespace __ToDoAreaName__.__ToDoBoundedContextName__.Domain.Shared;
+﻿using Architect.DomainModeling.Comparisons;
+
+namespace __ToDoAreaName__.__ToDoBoundedContextName__.Domain.Shared;
 
 /// <summary>
 /// <para>
