@@ -106,7 +106,7 @@ public sealed class CoreDbContext(
 
 	/// <summary>
 	/// Ensures that table names are in plural.
-	/// Although EF does this automatically where our <see cref="DbSet{TEntity}"/>s are named this way, entities without one (i.e. non-roots) require manual intervention.
+	/// Although EF does this automatically where the <see cref="DbSet{TEntity}"/> is named this way, entities without one (i.e. non-roots) require manual intervention.
 	/// </summary>
 	private void PluralizeTableNames(ModelBuilder modelBuilder)
 	{
