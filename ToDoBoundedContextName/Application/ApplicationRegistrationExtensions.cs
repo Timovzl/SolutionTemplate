@@ -35,7 +35,11 @@ public static class ApplicationRegistrationExtensions
 		services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
 
 		var result = services.AddControllers()
-			.AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+			.AddJsonOptions(options =>
+			{
+				options.JsonSerializerOptions.AllowDuplicateProperties = false;
+				options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+			});
 
 		// AddAuthentication() could be added here if authentication is required
 
