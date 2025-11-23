@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<AssemblyName>__ToDoAreaName__.__ToDoBoundedContextName__.$(MSBuildProjectName)</AssemblyName>
 		<RootNamespace>__ToDoAreaName__.__ToDoBoundedContextName__.$(MSBuildProjectName)</RootNamespace>
-		<TargetFramework>net9.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<Nullable>Enable</Nullable>
 		<ImplicitUsings>Enable</ImplicitUsings>
 		<ManagePackageVersionsCentrally>True</ManagePackageVersionsCentrally>
