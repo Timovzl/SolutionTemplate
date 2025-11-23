@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using System.Text;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
@@ -13,6 +14,7 @@ public sealed class RequestExceptionHandler(
 	ILogger<RequestExceptionHandler> logger)
 	: IExceptionHandler
 {
+	[SuppressMessage("Performance", "CA1873:Avoid potentially expensive logging", Justification = "Our logging is neither expensive nor likely to exceed the verbosity level.")]
 	public ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
 	{
 		var cancellationReasonMiddleware = (CancellationReasonMiddleware?)httpContext.Items[CancellationReasonMiddleware.HttpContextItemKey] ??

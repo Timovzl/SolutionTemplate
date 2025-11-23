@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,6 +35,7 @@ internal sealed class MigrationAssistant<TDbContext>(
 	/// <summary>
 	/// Performs database migrations for <typeparamref name="TDbContext"/> in a concurrency-safe way.
 	/// </summary>
+	[SuppressMessage("Performance", "CA1873:Avoid potentially expensive logging", Justification = "Our logging is neither expensive nor likely to exceed the verbosity level.")]
 	public async Task MigrateAsync(CancellationToken cancellationToken)
 	{
 		// Ensure that the database exists
