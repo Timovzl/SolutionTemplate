@@ -1,7 +1,7 @@
 ﻿using __ToDoAreaName__.__ToDoBoundedContextName__.Application;
 using __ToDoAreaName__.__ToDoBoundedContextName__.Application.ExceptionHandlers;
 using __ToDoAreaName__.__ToDoBoundedContextName__.Infrastructure.Databases;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Prometheus;
 using Serilog;
 
