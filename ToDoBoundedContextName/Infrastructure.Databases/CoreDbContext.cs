@@ -73,8 +73,6 @@ public sealed class CoreDbContext(
 		configurationBuilder.Conventions.Remove<RelationshipDiscoveryConvention>();
 		configurationBuilder.Conventions.Remove<PropertyDiscoveryConvention>();
 
-		// #TODO: Remove once we have EF Core 10
-		configurationBuilder.Conventions.Add(services => ActivatorUtilities.CreateInstance<ConstructorBindingConvention>(services)); // Workaround for ComplexProperty() bug that requires ConstructorBindingConvention to be present (but it can fail if run before UninitializedInstantiationConvention): https://github.com/dotnet/efcore/issues/32437
 		configurationBuilder.Conventions.Add(_ => new StringCasingConvention());
 		configurationBuilder.Conventions.Add(_ => new LimitedPrecisionDecimalConvention());
 		configurationBuilder.Conventions.Add(_ => new MonetaryAmountConvention());
