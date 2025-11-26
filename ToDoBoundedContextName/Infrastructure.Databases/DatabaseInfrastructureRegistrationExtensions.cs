@@ -13,7 +13,7 @@ public static class DatabaseInfrastructureRegistrationExtensions
 		var orphanedDomainObjectInterceptor = new OrphanedDomainObjectInterceptor();
 
 		services.AddPooledDbContextFactory<CoreDbContext>(dbContext => dbContext
-			.UseSqlServer(config.GetConnectionString("CoreDatabase")!, sqlServer => sqlServer.EnableRetryOnFailure())
+			.UseAzureSql(config.GetConnectionString("CoreDatabase")!, sqlServer => sqlServer.EnableRetryOnFailure())
 			.AddInterceptors(
 			[
 				orphanedDomainObjectInterceptor,
